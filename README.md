@@ -1,2 +1,2 @@
-# deliverease-mobile
-A repo for the mobile version of deliverease
+# Deliverease Mobile
+A repository for the mobile version of Deliverease

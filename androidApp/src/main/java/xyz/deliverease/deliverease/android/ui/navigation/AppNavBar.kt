@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import xyz.deliverease.deliverease.android.navigateTo
@@ -39,7 +40,7 @@ fun NavBar(modifier: Modifier = Modifier, navController: NavController) {
                             tint = MaterialTheme.colorScheme.primary
                         )
                     },
-                    label = { Text(destination.label) },
+                    label = { Text(text = destination.label, textAlign = TextAlign.Center) },
                     selected = currentRoute == destination.route,
                     onClick = {
                         if (currentRoute != destination.route) {

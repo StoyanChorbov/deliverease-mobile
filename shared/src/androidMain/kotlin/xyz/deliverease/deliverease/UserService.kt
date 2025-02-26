@@ -12,6 +12,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
+actual fun getBaseUrl() = "https://192.168.29.115:8081"
 actual fun getHttpEngine(): HttpClientEngine {
 //    TODO("Remove when ready to deploy/push to prod")
     val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
@@ -30,35 +31,4 @@ actual fun getHttpEngine(): HttpClientEngine {
         .build()
 
     return OkHttp.create { preconfigured = okHttpClient }
-}
-actual fun getBaseUrl() = "https://10.0.2.2:8081"
-
-class UserService {
-    private val httpService = HttpService()
-
-    suspend fun login(): UserDTO {
-        return withContext(Dispatchers.IO) {
-            try {
-                httpService
-                    .login()
-                    .body<UserDTO>()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                throw e
-            }
-        }
-    }
-
-    suspend fun register(user: UserRegisterDTO): UserDTO {
-        return withContext(Dispatchers.IO) {
-            try {
-                httpService
-                    .register(user)
-                    .body<UserDTO>()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                throw e
-            }
-        }
-    }
 }

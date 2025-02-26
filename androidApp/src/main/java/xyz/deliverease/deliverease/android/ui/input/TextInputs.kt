@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import xyz.deliverease.deliverease.android.ui.screens.Location
 
 
 @Composable
@@ -25,7 +26,39 @@ fun TextInputField(
         onValueChange = onChange,
         label = { Text(label) },
         singleLine = true,
-        modifier = Modifier
+        modifier = modifier
+    )
+}
+
+@Composable
+fun LocationInputField(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    onChange: (Location) -> Unit
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = { TODO("Handle location change with ViewModel and service") },
+        label = { Text(label) },
+        singleLine = true,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun TextInputBox(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    onChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onChange,
+        label = { Text(label) },
+        minLines = 3,
+        modifier = modifier
     )
 }
 
@@ -43,7 +76,7 @@ fun PasswordInputField(
         onValueChange = onChange,
         label = { Text(label) },
         singleLine = true,
-        modifier = Modifier,
+        modifier = modifier,
         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             IconButton(onClick = changePasswordVisibility) {

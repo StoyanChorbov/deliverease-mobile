@@ -13,6 +13,7 @@ data class UserRegisterDTO(
     val phoneNumber: String
 )
 
+@Serializable
 data class UserLoginDTO(
     val username: String,
     val password: String

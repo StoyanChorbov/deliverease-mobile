@@ -122,13 +122,13 @@ fun RegisterScreen(
                     isLoading = true
                     try {
                         UserService().register(UserRegisterDTO(
-                            username = "gosho",
-                            password = "parola1234",
-                            confirmPassword = "parola1234",
-                            firstName = "gosho",
-                            lastName = "goshov",
-                            email = "gosho@poshta.net",
-                            phoneNumber = ""
+                            username = username,
+                            password = password,
+                            confirmPassword = confirmPassword,
+                            firstName = firstName,
+                            lastName = lastName,
+                            email = email,
+                            phoneNumber = phoneNumber
                         ))
                         navigateTo(navController, NavDestination.Login.route)
                     } catch (e: Exception) {

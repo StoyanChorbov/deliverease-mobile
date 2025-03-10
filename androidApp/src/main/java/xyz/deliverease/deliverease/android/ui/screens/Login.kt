@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
 import xyz.deliverease.deliverease.android.ui.input.PasswordInputField
 import xyz.deliverease.deliverease.android.ui.input.TextInputField
@@ -30,9 +31,9 @@ import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController
+    modifier: Modifier = Modifier
 ) {
+    val navController = LocalNavController.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
@@ -60,7 +61,7 @@ fun LoginScreen(
         ) {
             Text(text = "Don't have an account?", fontSize = 16.sp)
             TextButton(
-                onClick = { navigateTo(navController, NavDestination.Register.route) },
+                onClick = { navigateTo(navController = navController, NavDestination.Register.route) },
                 modifier = Modifier
                     .padding(0.dp)
                     .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp),

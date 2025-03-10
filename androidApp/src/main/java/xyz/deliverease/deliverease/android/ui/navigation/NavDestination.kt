@@ -13,6 +13,7 @@ sealed class NavDestination(val route: String, val icon: ImageVector, val label:
     data object Login : NavDestination("login", Icons.AutoMirrored.Outlined.Login, "Login")
     data object Register : NavDestination("register", Icons.Outlined.PersonAdd, "Register")
     data object AddDelivery : NavDestination("add-delivery", Icons.Outlined.AddCircle, "Add Delivery")
+    data object AddDeliveryRecipients : NavDestination("add-delivery-recipients", Icons.Outlined.PersonAdd, "Add Delivery")
     data object Account : NavDestination("account", Icons.Outlined.AccountCircle, "Account")
 }
 

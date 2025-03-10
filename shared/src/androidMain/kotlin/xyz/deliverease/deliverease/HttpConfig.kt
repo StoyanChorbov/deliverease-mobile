@@ -1,10 +1,7 @@
 package xyz.deliverease.deliverease
 
-import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -12,9 +9,9 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-actual fun getBaseUrl() = "https://192.168.29.115:8081"
+actual fun getBaseUrl() = "https://10.0.2.2:8081"
 actual fun getHttpEngine(): HttpClientEngine {
-//    TODO("Remove when ready to deploy/push to prod")
+    // TODO("Remove when ready to deploy/push to prod")
     val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
         override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
         override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
@@ -32,3 +29,8 @@ actual fun getHttpEngine(): HttpClientEngine {
 
     return OkHttp.create { preconfigured = okHttpClient }
 }
+
+//actual fun getHttpEngine(): HttpClientEngine {
+//    val okHttpClient = OkHttpClient.Builder().build()
+//    return OkHttp.create { preconfigured = okHttpClient }
+//}

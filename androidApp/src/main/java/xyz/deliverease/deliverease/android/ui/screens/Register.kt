@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,10 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import kotlinx.coroutines.launch
-import xyz.deliverease.deliverease.UserRegisterDTO
-import xyz.deliverease.deliverease.UserService
+import xyz.deliverease.deliverease.user.UserRegisterDTO
+import xyz.deliverease.deliverease.user.UserRepository
+import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
 import xyz.deliverease.deliverease.android.ui.input.PasswordInputField
 import xyz.deliverease.deliverease.android.ui.input.TextInputField
@@ -37,9 +36,10 @@ import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 
 @Composable
 fun RegisterScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController
+    modifier: Modifier = Modifier
 ) {
+    val navController = LocalNavController.current
+
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
@@ -121,7 +121,8 @@ fun RegisterScreen(
                 coroutineScope.launch {
                     isLoading = true
                     try {
-                        UserService().register(UserRegisterDTO(
+                        UserRepository().register(
+                            UserRegisterDTO(
                             username = username,
                             password = password,
                             confirmPassword = confirmPassword,
@@ -129,7 +130,8 @@ fun RegisterScreen(
                             lastName = lastName,
                             email = email,
                             phoneNumber = phoneNumber
-                        ))
+                        )
+                        )
                         navigateTo(navController, NavDestination.Login.route)
                     } catch (e: Exception) {
                         e.printStackTrace()

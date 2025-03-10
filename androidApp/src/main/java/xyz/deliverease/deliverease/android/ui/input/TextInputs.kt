@@ -9,9 +9,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import xyz.deliverease.deliverease.android.ui.screens.Location
 
 
 @Composable
@@ -31,18 +31,30 @@ fun TextInputField(
 }
 
 @Composable
-fun LocationInputField(
+fun TextInputField(
     modifier: Modifier = Modifier,
     label: String,
     value: String,
-    onChange: (Location) -> Unit
+    readOnly: Boolean = false,
+    trailingIcon: ImageVector,
+    trailingIconHandler: () -> Unit,
+    onChange: (String) -> Unit = {}
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = { TODO("Handle location change with ViewModel and service") },
+        onValueChange = onChange,
         label = { Text(label) },
         singleLine = true,
-        modifier = modifier
+        readOnly = readOnly,
+        trailingIcon = {
+            IconButton(onClick = trailingIconHandler) {
+                Icon(
+                    imageVector = trailingIcon,
+                    contentDescription = "Trailing icon"
+                )
+            }
+        },
+        modifier = modifier,
     )
 }
 

@@ -1,14 +1,13 @@
 package xyz.deliverease.deliverease.android.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.NavigateNext
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
@@ -20,11 +19,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import xyz.deliverease.deliverease.android.LocalNavController
+import xyz.deliverease.deliverease.android.navigateTo
 import xyz.deliverease.deliverease.android.ui.input.CheckboxWithLabel
 import xyz.deliverease.deliverease.android.ui.input.DropdownWithLabel
-import xyz.deliverease.deliverease.android.ui.input.LocationInputField
 import xyz.deliverease.deliverease.android.ui.input.TextInputBox
 import xyz.deliverease.deliverease.android.ui.input.TextInputField
+import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 
 //TODO: Move to shared module
 enum class Category {
@@ -36,10 +37,10 @@ enum class Category {
 
 data class Location(val name: String = "", val latitude: Double = 0.0, val longitude: Double = 0.0)
 
-
-
 @Composable
 fun AddDeliveryScreen(modifier: Modifier = Modifier) {
+    val navController = LocalNavController.current
+
     var name by remember { mutableStateOf("") }
     var startLocation by remember { mutableStateOf(Location()) }
     var endLocation by remember { mutableStateOf(Location()) }
@@ -63,19 +64,19 @@ fun AddDeliveryScreen(modifier: Modifier = Modifier) {
             value = name,
             onChange = { name = it }
         )
-        LocationInputField(
+        TextInputField(
             label = "Start location",
             value = startLocation.name,
-            onChange = { startLocation = it }
+            onChange = { TODO("Handle in ViewModel") }
         )
-        LocationInputField(
+        TextInputField(
             label = "End location",
             value = endLocation.name,
-            onChange = { endLocation = it }
+            onChange = { TODO("Handle in ViewModel") }
         )
         TextInputField(
             label = "Primary Recipient",
-            value = "",
+            value = primaryRecipient,
             onChange = { primaryRecipient = it }
         )
         TextInputBox(
@@ -92,7 +93,10 @@ fun AddDeliveryScreen(modifier: Modifier = Modifier) {
             onChange = { isFragile = it }
         )
         OutlinedIconButton(
-            onClick = { TODO("Switch to next page") },
+            onClick = {
+                // TODO: Add validation for fields
+                navigateTo(navController, NavDestination.AddDeliveryRecipients.route)
+            },
             modifier = Modifier.padding(top = 12.dp),
         ) {
             Icon(
@@ -104,8 +108,42 @@ fun AddDeliveryScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AddDeliveryRecipients(modifier: Modifier) {
-    val recipients = remember { mutableStateListOf<String>() }
+fun AddDeliveryLocationScreen(modifier: Modifier = Modifier) {
+//    var location by remember {  }
+}
 
-    
+@Composable
+fun AddDeliveryRecipientsScreen(modifier: Modifier = Modifier) {
+    // List of the recipients' usernames
+    val recipients = remember { mutableStateListOf<String>() }
+    var currentRecipient by remember { mutableStateOf("") }
+
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        TextInputField(
+            label = "Recipient",
+            value = currentRecipient,
+            onChange = { currentRecipient = it },
+            trailingIcon = Icons.Outlined.Add,
+            trailingIconHandler = {
+                if (currentRecipient.isNotBlank()) {
+                    recipients.add(currentRecipient)
+                    currentRecipient = ""
+                }
+            }
+        )
+
+        recipients.forEach {
+            TextInputField(
+                label = "Recipient",
+                value = it,
+                readOnly = true,
+                trailingIcon = Icons.Outlined.Remove,
+                trailingIconHandler = { recipients.remove(it) }
+            )
+        }
+    }
 }

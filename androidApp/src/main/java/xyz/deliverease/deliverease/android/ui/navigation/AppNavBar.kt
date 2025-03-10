@@ -12,13 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
 
 
 @Composable
-fun NavBar(modifier: Modifier = Modifier, navController: NavController) {
+fun NavBar(modifier: Modifier = Modifier) {
+    val navController = LocalNavController.current
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
 

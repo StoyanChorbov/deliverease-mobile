@@ -15,6 +15,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.mapbox.common.MapboxOptions
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import xyz.deliverease.deliverease.android.config.androidAppModule
@@ -26,10 +27,13 @@ import xyz.deliverease.deliverease.appModule
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapboxOptions.accessToken = getString(R.string.mapbox_access_token)
+
         startKoin {
             androidContext(this@MainActivity)
             modules(appModule, androidAppModule)
         }
+
         setContent {
             DelivereaseTheme {
                 Surface(

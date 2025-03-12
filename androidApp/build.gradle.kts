@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -37,11 +35,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
+    }
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
     }
 }
 
@@ -59,6 +62,9 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     implementation(libs.mapbox)
     implementation(libs.mapbox.compose)
+    implementation(libs.mapbox.search.base)
+    implementation(libs.mapbox.place.autocomplete)
+    implementation(libs.mapbox.search.android.native)
     implementation(libs.mapbox.search.autofill)
     debugImplementation(libs.compose.ui.tooling)
 }

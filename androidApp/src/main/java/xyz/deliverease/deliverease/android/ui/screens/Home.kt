@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import xyz.deliverease.deliverease.android.ui.display.DeliveryRow
 import xyz.deliverease.deliverease.android.ui.display.DeliveryRowViewModel
+import xyz.deliverease.deliverease.android.ui.display.TestMap
 
 @Composable
 fun HomeScreen(
@@ -18,6 +19,7 @@ fun HomeScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
+        TestMap()
         DeliveriesSection()
     }
 }

@@ -14,7 +14,7 @@ import xyz.deliverease.deliverease.android.ui.display.TestMap
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxSize()

@@ -19,12 +19,14 @@ fun TextInputField(
     modifier: Modifier = Modifier,
     label: String,
     value: String,
+    isError: Boolean = false,
     onChange: (String) -> Unit
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
         label = { Text(label) },
+        isError = isError,
         singleLine = true,
         modifier = modifier
     )
@@ -35,6 +37,7 @@ fun TextInputField(
     modifier: Modifier = Modifier,
     label: String,
     value: String,
+    isError: Boolean = false,
     readOnly: Boolean = false,
     trailingIcon: ImageVector,
     trailingIconHandler: () -> Unit,
@@ -44,6 +47,7 @@ fun TextInputField(
         value = value,
         onValueChange = onChange,
         label = { Text(label) },
+        isError = isError,
         singleLine = true,
         readOnly = readOnly,
         trailingIcon = {
@@ -63,12 +67,14 @@ fun TextInputBox(
     modifier: Modifier = Modifier,
     label: String,
     value: String,
+    isError: Boolean = false,
     onChange: (String) -> Unit
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
         label = { Text(label) },
+        isError = isError,
         minLines = 3,
         modifier = modifier
     )
@@ -79,6 +85,7 @@ fun PasswordInputField(
     modifier: Modifier = Modifier,
     label: String,
     value: String,
+    isError: Boolean = false,
     onChange: (String) -> Unit,
     isPasswordVisible: Boolean,
     changePasswordVisibility: () -> Unit,
@@ -87,6 +94,7 @@ fun PasswordInputField(
         value = value,
         onValueChange = onChange,
         label = { Text(label) },
+        isError = isError,
         singleLine = true,
         modifier = modifier,
         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),

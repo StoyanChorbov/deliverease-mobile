@@ -1,16 +1,18 @@
-package xyz.deliverease.deliverease.user.profile
+package xyz.deliverease.deliverease.user
 
 import kotlinx.serialization.Serializable
 
-// Data Transfer Object for user profile
 @Serializable
-data class ProfileDTO(
+data class UserDTO(
     val username: String,
     val firstName: String,
     val lastName: String,
     val email: String,
     val phoneNumber: String,
+    val isDeliveryPerson: Boolean,
 //    val imageUrl: String,
-) {
-    constructor() : this("", "", "", "", "")
+)
+{
+    constructor() : this("", "", "", "", "", false)
 }
+

@@ -26,6 +26,7 @@ import xyz.deliverease.deliverease.android.ui.input.DropdownWithLabel
 import xyz.deliverease.deliverease.android.ui.input.TextInputBox
 import xyz.deliverease.deliverease.android.ui.input.TextInputField
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
+import xyz.deliverease.deliverease.delivery.Location
 
 //TODO: Move to shared module
 enum class Category {
@@ -34,8 +35,6 @@ enum class Category {
     ELECTRONICS,
     OTHER
 }
-
-data class Location(val name: String = "", val latitude: Double = 0.0, val longitude: Double = 0.0)
 
 @Composable
 fun AddDeliveryScreen(modifier: Modifier = Modifier) {

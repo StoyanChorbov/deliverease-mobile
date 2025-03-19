@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.BaseViewModel
 import xyz.deliverease.deliverease.user.UserDTO
 import xyz.deliverease.deliverease.user.UserRepository
+import xyz.deliverease.deliverease.user.login.UserLoginDTO
 
 class ProfileViewModel(private val userRepository: UserRepository) : BaseViewModel() {
 
@@ -23,7 +24,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : BaseViewMod
 
             try {
                 // TODO: Change to actual user
-                val profile = userRepository.login("pesho").toProfileDTO()
+                val profile = userRepository.login(UserLoginDTO("pesho", "parola")).toProfileDTO()
 
                 _profileState.emit(ProfileState(profile = profile))
             } catch (e: Exception) {

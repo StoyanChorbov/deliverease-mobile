@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,31 +27,24 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import xyz.deliverease.deliverease.user.UserRegisterDTO
+import org.koin.androidx.compose.koinViewModel
+import xyz.deliverease.deliverease.user.register.UserRegisterDTO
 import xyz.deliverease.deliverease.user.UserRepository
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
 import xyz.deliverease.deliverease.android.ui.input.PasswordInputField
 import xyz.deliverease.deliverease.android.ui.input.TextInputField
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
+import xyz.deliverease.deliverease.user.register.RegisterViewModel
 
 @Composable
 fun RegisterScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    registerViewModel: RegisterViewModel = koinViewModel()
 ) {
     val navController = LocalNavController.current
-
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var firstName by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
-    var phoneNumber by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+    val registerState by registerViewModel.registerState.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
-
-    var isLoading by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -59,40 +53,47 @@ fun RegisterScreen(
     ) {
         TextInputField(
             label = "Username",
-            value = username,
-            onChange = { username = it }
+            value = registerState.username,
+            isError = !registerState.isUsernameValid,
+            onChange = { registerViewModel.setUsername(it) }
         )
         TextInputField(
             label = "Email",
-            value = email,
-            onChange = { email = it }
+            value = registerState.email,
+            isError = !registerState.isEmailValid,
+            onChange = { registerViewModel.setEmail(it) }
         )
         TextInputField(
             label = "First name",
-            value = firstName,
-            onChange = { firstName = it }
+            value = registerState.firstName,
+            isError = !registerState.isFirstNameValid,
+            onChange = { registerViewModel.setFirstName(it) }
         )
         TextInputField(
             label = "Last name",
-            value = lastName,
-            onChange = { lastName = it }
+            value = registerState.lastName,
+            isError = !registerState.isLastNameValid,
+            onChange = { registerViewModel.setLastName(it) }
         )
         TextInputField(
             label = "Phone number(optional)",
-            value = phoneNumber,
-            onChange = { phoneNumber = it }
+            value = registerState.phoneNumber,
+            isError = !registerState.isPhoneNumberValid,
+            onChange = { registerViewModel.setPhoneNumber(it) }
         )
         PasswordInputField(
             label = "Password",
-            value = password,
-            onChange = { password = it },
+            value = registerState.password,
+            isError = !(registerState.isPasswordValid && registerState.passwordsMatch),
+            onChange = { registerViewModel.setPassword(it) },
             isPasswordVisible = isPasswordVisible,
             changePasswordVisibility = { isPasswordVisible = !isPasswordVisible }
         )
         PasswordInputField(
             label = "Confirm Password",
-            value = confirmPassword,
-            onChange = { confirmPassword = it },
+            value = registerState.confirmPassword,
+            isError = !registerState.passwordsMatch,
+            onChange = { registerViewModel.setConfirmPassword(it) },
             isPasswordVisible = isPasswordVisible,
             changePasswordVisibility = { isPasswordVisible = !isPasswordVisible }
         )
@@ -116,41 +117,27 @@ fun RegisterScreen(
                 )
             }
         }
-        ElevatedButton(
-            onClick = {
-                coroutineScope.launch {
-                    isLoading = true
-                    try {
-                        UserRepository().register(
-                            UserRegisterDTO(
-                            username = username,
-                            password = password,
-                            confirmPassword = confirmPassword,
-                            firstName = firstName,
-                            lastName = lastName,
-                            email = email,
-                            phoneNumber = phoneNumber
-                        )
-                        )
-                        navigateTo(navController, NavDestination.Login.route)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    } finally {
-                        isLoading = false
-                    }
-                }
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        if (registerState.isLoading) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(24.dp)
             )
-        ) {
-            if(isLoading) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(24.dp)
+        } else {
+            ElevatedButton(
+                onClick = {
+                    registerViewModel.register()
+
+                    val updatedState = registerViewModel.registerState.value
+
+                    if (updatedState.isInputValid && !updatedState.hasError) {
+                        navigateTo(navController = navController, NavDestination.Login.route)
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
-            } else {
+            ) {
                 Text("Register")
             }
         }

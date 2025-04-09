@@ -1,6 +1,5 @@
 package xyz.deliverease.deliverease.android.ui.display
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,25 +8,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-
-data class DeliveryRowViewModel(
-    val title: String,
-    val startLocation: String,
-    val endLocation: String,
-    val image: ImageVector
-) : ViewModel()
+import xyz.deliverease.deliverease.delivery.home.DeliveryListDTO
+import xyz.deliverease.deliverease.util.validation.toPascalCase
 
 @Composable
-fun DeliveryRow(modifier: Modifier = Modifier, delivery: DeliveryRowViewModel = viewModel()) {
+fun DeliveryRow(modifier: Modifier = Modifier, delivery: DeliveryListDTO, handleNavigation: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -48,14 +39,10 @@ fun DeliveryRow(modifier: Modifier = Modifier, delivery: DeliveryRowViewModel = 
         verticalAlignment = Alignment.CenterVertically
     ) {
         DeliveryRowTitle(
-            title = delivery.title,
-            startLocation = delivery.startLocation,
-            endLocation = delivery.endLocation
-        )
-        Image(
-            imageVector = delivery.image,
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
-            contentDescription = delivery.title
+            title = "${delivery.name} (${delivery.category.toPascalCase()})",
+            startLocation = delivery.startingLocation.name,
+            endLocation = delivery.endingLocation.name,
+            onClick = handleNavigation
         )
     }
 }
@@ -65,18 +52,23 @@ fun DeliveryRowTitle(
     modifier: Modifier = Modifier,
     title: String,
     startLocation: String,
-    endLocation: String
+    endLocation: String,
+    onClick: () -> Unit
 ) {
-    Column(modifier = modifier) {
-        Text(
-            modifier = Modifier,
-            text = title,
-            style = MaterialTheme.typography.titleMedium
-        )
-        Text(
-            modifier = Modifier,
-            text = "$startLocation -> $endLocation",
-            style = MaterialTheme.typography.bodyMedium
-        )
+    Surface(
+        onClick = onClick,
+    ) {
+        Column(modifier = modifier) {
+            Text(
+                modifier = Modifier,
+                text = title,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                modifier = Modifier,
+                text = "$startLocation -> $endLocation",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }

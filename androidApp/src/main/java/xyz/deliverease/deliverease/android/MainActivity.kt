@@ -20,6 +20,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import xyz.deliverease.deliverease.android.config.androidAppModule
 import xyz.deliverease.deliverease.android.ui.navigation.NavBar
+import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 import xyz.deliverease.deliverease.android.ui.navigation.NavGraph
 import xyz.deliverease.deliverease.android.ui.theme.DelivereaseTheme
 import xyz.deliverease.deliverease.appModule
@@ -28,6 +29,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MapboxOptions.accessToken = getString(R.string.mapbox_access_token)
+
+//        MapboxNavigationApp.setup {
+//            NavigationOptions
+//                .Builder(this)
+//                .build()
+//        }
 
         startKoin {
             androidContext(this@MainActivity)
@@ -55,15 +62,21 @@ val LocalNavController =
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
+    // TODO: Handle logged in check correctly
+    val isLoggedIn = true
+
     val navController = rememberNavController()
     CompositionLocalProvider(LocalNavController provides navController) {
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
                 .systemBarsPadding(),
-            bottomBar = { NavBar() }
+            bottomBar = { if (isLoggedIn) NavBar() }
         ) {
-            NavGraph(navController = navController)
+            NavGraph(
+                navController = navController,
+                startDestination = if (isLoggedIn) NavDestination.Home else NavDestination.Login
+            )
         }
     }
 }

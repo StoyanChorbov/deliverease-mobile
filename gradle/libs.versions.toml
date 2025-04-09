@@ -11,6 +11,7 @@ lifecycleViewmodel = "2.8.7"
 material-icons-extended = "1.7.8"
 androidx-activityCompose = "1.10.1"
 mapbox = "11.10.2"
+mapbox-navigation = "2.14.0"
 mapbox-search = "2.8.0-rc.1"
 navigationRuntimeKtx = "2.8.8"
 navigationCompose = "2.8.8"
@@ -40,6 +41,7 @@ mapbox-search-android-native = { module = "com.mapbox.search:mapbox-search-andro
 mapbox-search-base = { module = "com.mapbox.search:base", version.ref = "mapbox-search" }
 mapbox-search-autofill = { module = "com.mapbox.search:autofill", version.ref = "mapbox-search" }
 mapbox-place-autocomplete = { module = "com.mapbox.search:place-autocomplete", version.ref = "mapbox-search" }
+mapbox-navigation = { module = "com.mapbox.navigation:android", version.ref = "mapbox-navigation" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }

@@ -10,45 +10,76 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedIconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.koin.androidx.compose.koinViewModel
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
+import xyz.deliverease.deliverease.android.ui.display.Loading
+import xyz.deliverease.deliverease.android.ui.display.LocationAutofill
 import xyz.deliverease.deliverease.android.ui.input.CheckboxWithLabel
 import xyz.deliverease.deliverease.android.ui.input.DropdownWithLabel
 import xyz.deliverease.deliverease.android.ui.input.TextInputBox
 import xyz.deliverease.deliverease.android.ui.input.TextInputField
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
+import xyz.deliverease.deliverease.delivery.DeliveryCategory
 import xyz.deliverease.deliverease.delivery.Location
+import xyz.deliverease.deliverease.delivery.add.AddDeliveryEvent
+import xyz.deliverease.deliverease.delivery.add.AddDeliveryState
+import xyz.deliverease.deliverease.delivery.add.AddDeliveryViewModel
 
-//TODO: Move to shared module
-enum class Category {
-    FOOD,
-    CLOTHES,
-    ELECTRONICS,
-    OTHER
+@Composable
+fun AddDeliveryScreenRoot(
+    modifier: Modifier = Modifier,
+    addDeliveryViewModel: AddDeliveryViewModel = koinViewModel()
+) {
+    val navController = LocalNavController.current
+
+    AddDeliveryScreen(
+        modifier = modifier,
+        addDeliveryState = addDeliveryViewModel.addDeliveryState.value,
+        setName = { addDeliveryViewModel.setName(it) },
+        setStartLocation = { addDeliveryViewModel.setStartLocation(it) },
+        setEndLocation = { addDeliveryViewModel.setEndLocation(it) },
+        setPrimaryRecipient = { addDeliveryViewModel.setPrimaryRecipient(it) },
+        setDescription = { addDeliveryViewModel.setDescription(it) },
+        setDeliveryCategory = { addDeliveryViewModel.setDeliveryCategory(it) },
+        setIsFragile = { addDeliveryViewModel.setIsFragile(it) },
+        onAddDelivery = {
+            // TODO: Switch with events
+//            addDeliveryViewModel.addDelivery()
+
+//            if (addDeliveryViewModel.addDeliveryState.value.isInputValid) {
+                navigateTo(
+                    navController = navController,
+                    NavDestination.AddDeliveryRecipients.route
+                )
+//            }
+        }
+    )
 }
 
 @Composable
-fun AddDeliveryScreen(modifier: Modifier = Modifier) {
-    val navController = LocalNavController.current
+fun AddDeliveryScreen(
+    modifier: Modifier = Modifier,
+    addDeliveryState: AddDeliveryState,
+    setName: (String) -> Unit,
+    setStartLocation: (Location) -> Unit,
+    setEndLocation: (Location) -> Unit,
+    setPrimaryRecipient: (String) -> Unit,
+    setDescription: (String) -> Unit,
+    setDeliveryCategory: (DeliveryCategory) -> Unit,
+    setIsFragile: (Boolean) -> Unit,
+    onAddDelivery: () -> Unit
+) {
 
-    var name by remember { mutableStateOf("") }
-    var startLocation by remember { mutableStateOf(Location()) }
-    var endLocation by remember { mutableStateOf(Location()) }
-    var primaryRecipient by remember { mutableStateOf("") } // Get only the username
-    var description by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf(Category.OTHER) }
-    var isFragile by remember { mutableStateOf(false) }
-
-    Column (
+    Column(
         modifier = modifier
             .fillMaxSize()
             .padding(top = 12.dp),
@@ -60,88 +91,119 @@ fun AddDeliveryScreen(modifier: Modifier = Modifier) {
         // Buttons: Add Recipient, Submit
         TextInputField(
             label = "Package name",
-            value = name,
-            onChange = { name = it }
+            value = addDeliveryState.name,
+            onChange = setName
         )
-        TextInputField(
-            label = "Start location",
-            value = startLocation.name,
-            onChange = { TODO("Handle in ViewModel") }
+        // TODO: Add option for selecting on a map with popup
+        LocationAutofill(
+            label = "Start Location",
+            setLocation = setStartLocation
         )
-        TextInputField(
-            label = "End location",
-            value = endLocation.name,
-            onChange = { TODO("Handle in ViewModel") }
+        // TODO: Add option for selecting on a map with popup
+        LocationAutofill(
+            label = "End Location",
+            setLocation = setEndLocation
         )
         TextInputField(
             label = "Primary Recipient",
-            value = primaryRecipient,
-            onChange = { primaryRecipient = it }
+            value = addDeliveryState.primaryRecipient,
+            onChange = setPrimaryRecipient
         )
         TextInputBox(
             label = "Description",
-            value = description,
-            onChange = { description = it }
+            value = addDeliveryState.description,
+            onChange = setDescription
         )
-        DropdownWithLabel(label = "Category", items = Category.entries.map { it.toString() }) {
-            category = Category.valueOf(it)
-        }
+        DropdownWithLabel(
+            label = "Category",
+            items = DeliveryCategory.entries.map { it.toString() },
+            readOnly = true,
+            onSelectedChange = { setDeliveryCategory(DeliveryCategory.valueOf(it)) }
+        )
         CheckboxWithLabel(
             label = "Is the package fragile?",
-            checked = isFragile,
-            onChange = { isFragile = it }
+            checked = addDeliveryState.isFragile,
+            onChange = setIsFragile
         )
-        OutlinedIconButton(
-            onClick = {
-                // TODO: Add validation for fields
-                navigateTo(navController, NavDestination.AddDeliveryRecipients.route)
-            },
-            modifier = Modifier.padding(top = 12.dp),
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.NavigateNext,
-                contentDescription = "Add recipients"
-            )
+        if (addDeliveryState.isLoading) {
+            Loading()
+        } else if (addDeliveryState.hasError) {
+            Text(
+                text = addDeliveryState.error ?: "An error occurred"
+            ) //TODO: Swap with custom ErrorText composable
+        } else {
+            OutlinedIconButton(
+                onClick = onAddDelivery,
+                modifier = Modifier.padding(top = 12.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.NavigateNext,
+                    contentDescription = "Add recipients"
+                )
+            }
         }
     }
 }
 
 @Composable
 fun AddDeliveryLocationScreen(modifier: Modifier = Modifier) {
-//    var location by remember {  }
+//    TODO: Implement this screen
+//    BasicMapWithMarker(
+//        modifier = modifier.fillMaxSize(),
+//        onMarkerClick = { }
+//    )
 }
 
 @Composable
-fun AddDeliveryRecipientsScreen(modifier: Modifier = Modifier) {
-    // List of the recipients' usernames
-    val recipients = remember { mutableStateListOf<String>() }
-    var currentRecipient by remember { mutableStateOf("") }
+fun AddDeliveryRecipientsScreenRoot(modifier: Modifier = Modifier, addDeliveryViewModel: AddDeliveryViewModel = koinViewModel()) {
+    val navController = LocalNavController.current
+    val addDeliveryState by addDeliveryViewModel.addDeliveryState.collectAsState()
+    val addDeliveryEvent by addDeliveryViewModel.addDeliveryEvent.collectAsState(initial = AddDeliveryEvent.Idle)
 
+    AddDeliveryRecipientsScreen(
+        modifier = modifier,
+        label = "Recipient",
+        addDeliveryState = addDeliveryState,
+        onChangeCurrentRecipient = { addDeliveryViewModel.setCurrentRecipient(it) },
+        onAddRecipient = {
+            addDeliveryViewModel.addRecipient()
+        },
+        onRemoveRecipient = {
+            addDeliveryViewModel.removeRecipient(it)
+        }
+    )
+}
+
+@Composable
+fun AddDeliveryRecipientsScreen(
+    modifier: Modifier = Modifier,
+    label: String,
+    addDeliveryState: AddDeliveryState,
+    onChangeCurrentRecipient: (String) -> Unit,
+    onAddRecipient: () -> Unit,
+    onRemoveRecipient: (String) -> Unit,
+) {
+
+    // List of the recipients' usernames
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         TextInputField(
-            label = "Recipient",
-            value = currentRecipient,
-            onChange = { currentRecipient = it },
+            label = label,
+            value = addDeliveryState.currentRecipient,
+            onChange = onChangeCurrentRecipient,
             trailingIcon = Icons.Outlined.Add,
-            trailingIconHandler = {
-                if (currentRecipient.isNotBlank()) {
-                    recipients.add(currentRecipient)
-                    currentRecipient = ""
-                }
-            }
+            trailingIconHandler = onAddRecipient
         )
 
-        recipients.forEach {
+        addDeliveryState.recipients.forEach {
             TextInputField(
-                label = "Recipient",
                 value = it,
                 readOnly = true,
                 trailingIcon = Icons.Outlined.Remove,
-                trailingIconHandler = { recipients.remove(it) }
+                trailingIconHandler = { onRemoveRecipient(it) }
             )
         }
     }

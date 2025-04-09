@@ -63,6 +63,34 @@ fun TextInputField(
 }
 
 @Composable
+fun TextInputField(
+    modifier: Modifier = Modifier,
+    value: String,
+    isError: Boolean = false,
+    readOnly: Boolean = false,
+    trailingIcon: ImageVector,
+    trailingIconHandler: () -> Unit,
+    onChange: (String) -> Unit = {}
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onChange,
+        isError = isError,
+        singleLine = true,
+        readOnly = readOnly,
+        trailingIcon = {
+            IconButton(onClick = trailingIconHandler) {
+                Icon(
+                    imageVector = trailingIcon,
+                    contentDescription = "Trailing icon"
+                )
+            }
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
 fun TextInputBox(
     modifier: Modifier = Modifier,
     label: String,

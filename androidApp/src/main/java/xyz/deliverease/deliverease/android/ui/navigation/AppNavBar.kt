@@ -16,7 +16,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
 
-
+// The bottom navigation on all screens
 @Composable
 fun NavBar(modifier: Modifier = Modifier) {
     val navController = LocalNavController.current
@@ -25,8 +25,7 @@ fun NavBar(modifier: Modifier = Modifier) {
 
     NavigationBar(
         modifier = modifier
-    )
-    {
+    ) {
         Row(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,

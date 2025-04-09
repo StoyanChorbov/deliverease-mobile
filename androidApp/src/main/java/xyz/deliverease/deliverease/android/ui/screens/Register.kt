@@ -35,15 +35,53 @@ import xyz.deliverease.deliverease.android.navigateTo
 import xyz.deliverease.deliverease.android.ui.input.PasswordInputField
 import xyz.deliverease.deliverease.android.ui.input.TextInputField
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
+import xyz.deliverease.deliverease.user.register.RegisterState
 import xyz.deliverease.deliverease.user.register.RegisterViewModel
+
+@Composable
+fun RegisterScreenRoot(
+    modifier: Modifier = Modifier,
+    registerViewModel: RegisterViewModel = koinViewModel(),
+) {
+    val navController = LocalNavController.current
+
+    RegisterScreen(
+        modifier = modifier,
+        registerState = registerViewModel.registerState.collectAsState().value,
+        setUsername = { registerViewModel.setUsername(it) },
+        setEmail = { registerViewModel.setEmail(it) },
+        setFirstName = { registerViewModel.setFirstName(it) },
+        setLastName = { registerViewModel.setLastName(it) },
+        setPhoneNumber = { registerViewModel.setPhoneNumber(it) },
+        setPassword = { registerViewModel.setPassword(it) },
+        setConfirmPassword = { registerViewModel.setConfirmPassword(it) },
+        navigateToLogin = { navigateTo(navController = navController, NavDestination.Login.route) },
+        onRegister = {
+            registerViewModel.register()
+
+            val updatedState = registerViewModel.registerState.value
+
+            if (updatedState.isInputValid && !updatedState.hasError) {
+                navigateTo(navController = navController, NavDestination.Login.route)
+            }
+        }
+    )
+}
 
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
-    registerViewModel: RegisterViewModel = koinViewModel()
+    registerState: RegisterState,
+    setUsername: (String) -> Unit,
+    setEmail: (String) -> Unit,
+    setFirstName: (String) -> Unit,
+    setLastName: (String) -> Unit,
+    setPhoneNumber: (String) -> Unit,
+    setPassword: (String) -> Unit,
+    setConfirmPassword: (String) -> Unit,
+    navigateToLogin: () -> Unit,
+    onRegister: () -> Unit,
 ) {
-    val navController = LocalNavController.current
-    val registerState by registerViewModel.registerState.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
 
     Column(
@@ -54,56 +92,119 @@ fun RegisterScreen(
         TextInputField(
             label = "Username",
             value = registerState.username,
-            isError = !registerState.isUsernameValid,
-            onChange = { registerViewModel.setUsername(it) }
+            isError = registerState.usernameErrorMessage != null,
+            onChange = { setUsername(it) }
         )
+        registerState.usernameErrorMessage.let {
+            if (it != null) {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp
+                )
+            }
+        }
         TextInputField(
             label = "Email",
             value = registerState.email,
-            isError = !registerState.isEmailValid,
-            onChange = { registerViewModel.setEmail(it) }
+            isError = registerState.emailErrorMessage != null,
+            onChange = { setEmail(it) }
         )
+        registerState.emailErrorMessage.let {
+            if (it != null) {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp
+                )
+            }
+        }
         TextInputField(
             label = "First name",
             value = registerState.firstName,
-            isError = !registerState.isFirstNameValid,
-            onChange = { registerViewModel.setFirstName(it) }
+            isError = registerState.firstNameErrorMessage != null,
+            onChange = { setFirstName(it) }
         )
+        registerState.firstNameErrorMessage.let {
+            if (it != null) {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp
+                )
+            }
+        }
         TextInputField(
             label = "Last name",
             value = registerState.lastName,
-            isError = !registerState.isLastNameValid,
-            onChange = { registerViewModel.setLastName(it) }
+            isError = registerState.lastNameErrorMessage != null,
+            onChange = { setLastName(it) }
         )
+        registerState.lastNameErrorMessage.let {
+            if (it != null) {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp
+                )
+            }
+        }
         TextInputField(
             label = "Phone number(optional)",
             value = registerState.phoneNumber,
-            isError = !registerState.isPhoneNumberValid,
-            onChange = { registerViewModel.setPhoneNumber(it) }
+            isError = registerState.phoneNumberErrorMessage != null,
+            onChange = { setPhoneNumber(it) }
         )
+        registerState.phoneNumberErrorMessage.let {
+            if (it != null) {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp
+                )
+            }
+        }
         PasswordInputField(
             label = "Password",
             value = registerState.password,
-            isError = !(registerState.isPasswordValid && registerState.passwordsMatch),
-            onChange = { registerViewModel.setPassword(it) },
+            isError = registerState.passwordErrorMessage != null,
+            onChange = { setPassword(it) },
             isPasswordVisible = isPasswordVisible,
             changePasswordVisibility = { isPasswordVisible = !isPasswordVisible }
         )
+        registerState.passwordErrorMessage.let {
+            if (it != null) {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp
+                )
+            }
+        }
         PasswordInputField(
             label = "Confirm Password",
             value = registerState.confirmPassword,
-            isError = !registerState.passwordsMatch,
-            onChange = { registerViewModel.setConfirmPassword(it) },
+            isError = registerState.confirmPasswordErrorMessage != null,
+            onChange = { setConfirmPassword(it) },
             isPasswordVisible = isPasswordVisible,
             changePasswordVisibility = { isPasswordVisible = !isPasswordVisible }
         )
+        registerState.confirmPasswordErrorMessage.let {
+            if (it != null) {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp
+                )
+            }
+        }
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Already have an account?", fontSize = 16.sp)
             TextButton(
-                onClick = { navigateTo(navController, NavDestination.Login.route) },
+                onClick = navigateToLogin,
                 modifier = Modifier
                     .padding(0.dp)
                     .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp),
@@ -124,15 +225,7 @@ fun RegisterScreen(
             )
         } else {
             ElevatedButton(
-                onClick = {
-                    registerViewModel.register()
-
-                    val updatedState = registerViewModel.registerState.value
-
-                    if (updatedState.isInputValid && !updatedState.hasError) {
-                        navigateTo(navController = navController, NavDestination.Login.route)
-                    }
-                },
+                onClick = onRegister,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,

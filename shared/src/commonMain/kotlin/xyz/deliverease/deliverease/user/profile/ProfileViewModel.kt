@@ -24,7 +24,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : BaseViewMod
 
             try {
                 // TODO: Change to actual user
-                val profile = userRepository.login(UserLoginDTO("pesho", "parola")).toProfileDTO()
+                val profile = userRepository.login(UserLoginDTO("pesho", "parolica")).toProfileDTO()
 
                 _profileState.emit(ProfileState(profile = profile))
             } catch (e: Exception) {

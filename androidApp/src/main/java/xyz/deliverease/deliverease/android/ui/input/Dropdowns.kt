@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownWithLabel(modifier: Modifier = Modifier, label: String, items: List<String>, onSelectedChange: (String) -> Unit) {
+fun DropdownWithLabel(modifier: Modifier = Modifier, label: String, items: List<String>, readOnly: Boolean = false, onSelectedChange: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var selected by rememberSaveable { mutableStateOf(items.last()) }
 
@@ -29,7 +29,7 @@ fun DropdownWithLabel(modifier: Modifier = Modifier, label: String, items: List<
         OutlinedTextField(
             value = selected,
             onValueChange = { selected = it },
-            readOnly = true,
+            readOnly = readOnly,
             label = { Text(label) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)

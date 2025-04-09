@@ -6,8 +6,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.BaseViewModel
 import xyz.deliverease.deliverease.user.UserRepository
+import xyz.deliverease.deliverease.util.validation.ValidateEmail
+import xyz.deliverease.deliverease.util.validation.ValidateName
+import xyz.deliverease.deliverease.util.validation.ValidatePassword
+import xyz.deliverease.deliverease.util.validation.ValidatePhoneNumber
+import xyz.deliverease.deliverease.util.validation.ValidateTermsAndConditions
+import xyz.deliverease.deliverease.util.validation.ValidateUsername
 
-class RegisterViewModel(private val userRepository: UserRepository) : BaseViewModel() {
+class RegisterViewModel(
+    private val userRepository: UserRepository,
+    private val usernameValidator: ValidateUsername,
+    private val passwordValidator: ValidatePassword,
+    private val emailValidator: ValidateEmail,
+    private val nameValidator: ValidateName,
+    private val phoneNumberValidator: ValidatePhoneNumber,
+    private val termsAndConditionsValidator: ValidateTermsAndConditions
+) : BaseViewModel() {
 
     private val _registerState = MutableStateFlow(RegisterState())
     val registerState = _registerState.asStateFlow()
@@ -57,68 +71,44 @@ class RegisterViewModel(private val userRepository: UserRepository) : BaseViewMo
 
     private fun validateFields() {
         val currentState = _registerState.value
-        val isUsernameValid = validateUsername(currentState.username)
-        val isEmailValid = validateEmail(currentState.email)
-        val isFirstNameValid = validateName(currentState.firstName)
-        val isLastNameValid = validateName(currentState.lastName)
-        val isPhoneNumberValid = validatePhoneNumber(currentState.phoneNumber)
-        val isPasswordValid = validatePassword(currentState.password)
-        val passwordsMatch = currentState.password == currentState.confirmPassword
+        val usernameResponse = usernameValidator.validate(currentState.username)
+        val emailResponse = emailValidator.validate(currentState.email)
+        val firstNameResponse = nameValidator.validate(currentState.firstName)
+        val lastNameResponse = nameValidator.validate(currentState.lastName)
+        val phoneNumberResponse = phoneNumberValidator.validate(currentState.phoneNumber)
+        val passwordResponse = passwordValidator.validate(currentState.password)
+        val confirmPasswordResponse = passwordValidator.validate(currentState.password, currentState.confirmPassword)
+        val termsAndConditionsResult = termsAndConditionsValidator.validate(currentState.areTermsAndConditionsAccepted)
 
-        _registerState.update {
-            it.copy(
-                isUsernameValid = isUsernameValid,
-                isEmailValid = isEmailValid,
-                isFirstNameValid = isFirstNameValid,
-                isLastNameValid = isLastNameValid,
-                isPhoneNumberValid = isPhoneNumberValid,
-                isPasswordValid = isPasswordValid,
-                passwordsMatch = passwordsMatch,
-                isInputValid = isUsernameValid && isEmailValid && isFirstNameValid && isLastNameValid && isPhoneNumberValid && isPasswordValid && passwordsMatch,
-                isLoading = false
-            )
-        }
-    }
+        val hasError = listOf(
+            usernameResponse,
+            emailResponse,
+            firstNameResponse,
+            lastNameResponse,
+            phoneNumberResponse,
+            passwordResponse,
+            confirmPasswordResponse
+        ).any { !it.success }
 
-    private fun validateUsername(username: String): Boolean {
-        if (username.isEmpty()) {
-            return false
-        }
-
-        return true
-    }
-
-    private fun validateEmail(email: String): Boolean {
-        if (email.isEmpty()) {
-            return false
-        }
-
-        return true
-    }
-
-    // Validation for either first or last name
-    private fun validateName(name: String): Boolean {
-        if (name.isEmpty()) {
-            return false
+        if (hasError) {
+            _registerState.update {
+                it.copy(
+                    usernameErrorMessage = usernameResponse.error,
+                    emailErrorMessage = emailResponse.error,
+                    firstNameErrorMessage = firstNameResponse.error,
+                    lastNameErrorMessage = lastNameResponse.error,
+                    phoneNumberErrorMessage = phoneNumberResponse.error,
+                    passwordErrorMessage = passwordResponse.error,
+                    confirmPasswordErrorMessage = confirmPasswordResponse.error,
+                    termsAndConditionsErrorMessage = termsAndConditionsResult.error,
+                    isInputValid = false,
+                    isLoading = false
+                )
+            }
+            return
         }
 
-        return true
-    }
 
-    private fun validatePhoneNumber(number: String): Boolean {
-        if (number.isEmpty()) {
-            return false
-        }
-
-        return true
-    }
-
-    private fun validatePassword(password: String): Boolean {
-        if (password.isEmpty()) {
-            return false
-        }
-
-        return true
     }
 
     fun setUsername(username: String) {

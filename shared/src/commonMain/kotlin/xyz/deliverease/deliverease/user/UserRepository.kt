@@ -6,6 +6,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import xyz.deliverease.deliverease.BaseRepository
 import xyz.deliverease.deliverease.user.login.UserLoginDTO
@@ -15,12 +16,13 @@ class UserRepository : BaseRepository() {
     suspend fun login(userDto: UserLoginDTO): UserDTO {
         //TODO("Get actual user with/without token")
         try {
+//            return UserDTO()
             val res = client.post {
                 url("$baseUrl/users/login")
                 contentType(ContentType.Application.Json)
                 setBody(userDto)
             }
-            if (res.status.value != 200)
+            if (res.status != HttpStatusCode.OK)
                 throw Exception("Failed to login")
             return res.body()
         } catch (e: Exception) {
@@ -39,7 +41,7 @@ class UserRepository : BaseRepository() {
                     contentType(ContentType.Application.Json)
                     setBody(user)
                 }
-                if (res.status.value != 201)
+                if (res.status != HttpStatusCode.Created)
                     throw Exception("Failed to register user")
                 return res.body()
             } else

@@ -60,11 +60,23 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
-    implementation(libs.mapbox)
-    implementation(libs.mapbox.compose)
-    implementation(libs.mapbox.search.base)
-    implementation(libs.mapbox.place.autocomplete)
-    implementation(libs.mapbox.search.android.native)
-    implementation(libs.mapbox.search.autofill)
+    implementation(libs.mapbox) {
+        exclude("com.mapbox.common", "okhttp")
+    }
+    implementation(libs.mapbox.compose) {
+        exclude("com.mapbox.common", "okhttp")
+    }
+    implementation(libs.mapbox.search.base) {
+        exclude("com.mapbox.common", "okhttp")
+    }
+    implementation(libs.mapbox.place.autocomplete) {
+        exclude("com.mapbox.common", "okhttp")
+    }
+    implementation(libs.mapbox.search.android.native) {
+        exclude("com.mapbox.common", "okhttp")
+    }
+    implementation(libs.mapbox.search.autofill) {
+        exclude("com.mapbox.common", "okhttp")
+    }
     debugImplementation(libs.compose.ui.tooling)
 }

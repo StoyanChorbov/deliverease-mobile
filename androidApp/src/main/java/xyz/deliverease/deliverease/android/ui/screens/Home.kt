@@ -12,7 +12,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import org.koin.androidx.compose.koinViewModel
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
-import xyz.deliverease.deliverease.android.ui.display.BasicMapWithMarkers
+import xyz.deliverease.deliverease.android.ui.display.MapWithMarkers
 import xyz.deliverease.deliverease.android.ui.display.DeliveriesSection
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 import xyz.deliverease.deliverease.delivery.DeliveryCategory
@@ -31,8 +31,7 @@ fun HomeScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-//            BasicMap()
-        BasicMapWithMarkers(
+        MapWithMarkers(
             points = setOf(
                 Location(name = "Start Location 1", latitude = 42.315073, longitude = 24.627979),
                 Location(name = "End Location 1", latitude = 44.2, longitude = 25.2),
@@ -74,7 +73,7 @@ fun HomeScreenRoot(
                 name = "Delivery $i",
                 startingLocation = Location(name = "Start Location $i"),
                 endingLocation = Location(name = "End Location $i"),
-                category = DeliveryCategory.OTHER
+                category = DeliveryCategory.Other
             ),
         )
 
@@ -85,7 +84,7 @@ fun HomeScreenRoot(
                 name = "Delivery $i",
                 startingLocation = Location(name = "Start Location $i"),
                 endingLocation = Location(name = "End Location $i"),
-                category = DeliveryCategory.OTHER
+                category = DeliveryCategory.Other
             ),
         )
 

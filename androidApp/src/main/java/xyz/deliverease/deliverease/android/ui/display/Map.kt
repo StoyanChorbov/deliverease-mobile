@@ -5,17 +5,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationState
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
 import xyz.deliverease.deliverease.android.R
 import xyz.deliverease.deliverease.delivery.Location
-import xyz.deliverease.deliverease.delivery.choose.DeliveryMarkerDetails
+import xyz.deliverease.deliverease.delivery.find.DeliveryMarkerDetails
 
 @Composable
 fun BasicMap(modifier: Modifier = Modifier) {
@@ -38,7 +40,7 @@ fun BasicMap(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun BasicMapWithMarkers(modifier: Modifier = Modifier, points: Set<Location>) {
+fun MapWithMarkers(modifier: Modifier = Modifier, points: Set<Location>) {
     val markers = points.map { Point.fromLngLat(it.longitude, it.latitude) }
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
@@ -63,6 +65,54 @@ fun BasicMapWithMarkers(modifier: Modifier = Modifier, points: Set<Location>) {
             PointAnnotation(point = it) {
                 iconImage = marker
             }
+        }
+    }
+}
+
+@Composable
+fun MapWithLiveLocationAndMarkers(
+    modifier: Modifier = Modifier,
+    points: Set<Location>,
+    liveLocation: Location
+) {
+    val markers = points.map { Point.fromLngLat(it.longitude, it.latitude) }
+    val mapViewportState = rememberMapViewportState {
+        setCameraOptions {
+            zoom(11.0)
+            center(if (markers.isNotEmpty()) markers[0] else Point.fromLngLat(0.0, 0.0))
+            bearing(0.0)
+            pitch(0.0)
+        }
+    }
+    val isDarkTheme = isSystemInDarkTheme()
+    MapboxMap(
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.5f),
+        mapViewportState = mapViewportState,
+        style = { if (isDarkTheme) MapStyle(Style.DARK) else MapStyle(Style.LIGHT) }
+    ) {
+        val pointMarker =
+            rememberIconImage(key = "marker", painter = painterResource(R.drawable.red_marker))
+
+        val liveLocationMarker =
+            rememberIconImage(
+                key = "live_location",
+                painter = painterResource(R.drawable.red_marker)
+            )
+
+        markers.forEach {
+            PointAnnotation(point = it) {
+                iconImage = pointMarker
+            }
+        }
+        PointAnnotation(
+            point = Point.fromLngLat(liveLocation.longitude, liveLocation.latitude),
+        ) {
+            iconImage = liveLocationMarker
+            iconColor = Color(0xFF00FF00) // Green color for live location
+            textField = "Wassup"
+            textColor = Color(0xFF00FF00)
         }
     }
 }

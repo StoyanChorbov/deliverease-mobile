@@ -18,7 +18,11 @@ import xyz.deliverease.deliverease.delivery.home.DeliveryListDTO
 import xyz.deliverease.deliverease.util.validation.toPascalCase
 
 @Composable
-fun DeliveryRow(modifier: Modifier = Modifier, delivery: DeliveryListDTO, handleNavigation: () -> Unit) {
+fun DeliveryRow(
+    modifier: Modifier = Modifier,
+    delivery: DeliveryListDTO,
+    handleNavigation: () -> Unit
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -39,7 +43,8 @@ fun DeliveryRow(modifier: Modifier = Modifier, delivery: DeliveryListDTO, handle
         verticalAlignment = Alignment.CenterVertically
     ) {
         DeliveryRowTitle(
-            title = "${delivery.name} (${delivery.category.toPascalCase()})",
+            title = "${delivery.name} (${delivery.category.toPascalCase()})" +
+                    if (delivery.isFragile) " (fragile)" else "",
             startLocation = delivery.startingLocation.name,
             endLocation = delivery.endingLocation.name,
             onClick = handleNavigation

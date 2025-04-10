@@ -74,12 +74,6 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
         }
     }
 
-    fun setPrimaryRecipient(primaryRecipient: String) {
-        _addDeliveryState.update {
-            it.copy(primaryRecipient = primaryRecipient)
-        }
-    }
-
     fun setDescription(description: String) {
         _addDeliveryState.update {
             it.copy(description = description)
@@ -88,7 +82,7 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
 
     fun setDeliveryCategory(deliveryCategory: DeliveryCategory) {
         _addDeliveryState.update {
-            it.copy(deliveryCategory = deliveryCategory)
+            it.copy(category = deliveryCategory)
         }
     }
 
@@ -124,9 +118,8 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
             name = name,
             startLocation = startLocation,
             endLocation = endLocation,
-            primaryRecipient = primaryRecipient,
             description = description,
-            deliveryCategory = deliveryCategory,
+            category = category,
             recipients = recipients,
             isFragile = isFragile
         )

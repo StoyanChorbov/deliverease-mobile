@@ -14,14 +14,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownWithLabel(modifier: Modifier = Modifier, label: String, items: List<String>, readOnly: Boolean = false, onSelectedChange: (String) -> Unit) {
+fun DropdownWithLabel(
+    modifier: Modifier = Modifier,
+    label: String,
+    items: List<String>,
+    readOnly: Boolean = false,
+    onSelectedChange: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     var selected by rememberSaveable { mutableStateOf(items.last()) }
 
-    ExposedDropdownMenuBox (
+    ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = it },
         modifier = modifier
@@ -35,7 +42,57 @@ fun DropdownWithLabel(modifier: Modifier = Modifier, label: String, items: List<
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
         )
 
-        ExposedDropdownMenu (expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            items.forEach {
+                DropdownMenuItem(
+                    text = { Text(it) },
+                    onClick = {
+                        selected = it
+                        onSelectedChange(it)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DropdownWithoutIcon(
+    modifier: Modifier = Modifier,
+    label: String,
+    items: List<String>,
+    readOnly: Boolean = false,
+    onSelectedChange: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var timer = LocalDateTime.now().second // TODO: Swap with a better timer to track delay for dropdown
+    var selected by rememberSaveable { mutableStateOf(items.last()) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        modifier = modifier
+    ) {
+        OutlinedTextField(
+            value = selected,
+            onValueChange = {
+                selected = it
+                if (LocalDateTime.now().second - timer > 5) {
+                    expanded = true
+                    timer = LocalDateTime.now().second
+                } else {
+                    expanded = false
+                }
+            },
+            readOnly = readOnly,
+            label = { Text(label) },
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
+        )
+
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             items.forEach {
                 DropdownMenuItem(
                     text = { Text(it) },

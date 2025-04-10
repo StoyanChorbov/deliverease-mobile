@@ -12,6 +12,8 @@ sealed class NavDestination(val route: String, val icon: ImageVector, val label:
     // The details for all screens / statically-typed navigation
     data object Home : NavDestination("home", Icons.Outlined.Home, "Home")
     data object DeliveryDetails : NavDestination("delivery-details", Icons.Outlined.Home, "Delivery Details")
+    data object FindDelivery : NavDestination("find-delivery", Icons.Outlined.Home, "Find Delivery")
+    data object FindableDelivery : NavDestination("findable-delivery", Icons.Outlined.Home, "Findable Delivery")
     data object Login : NavDestination("login", Icons.AutoMirrored.Outlined.Login, "Login")
     data object Register : NavDestination("register", Icons.Outlined.PersonAdd, "Register")
     data object AddDelivery : NavDestination("add-delivery", Icons.Outlined.AddCircle, "Add Delivery")
@@ -23,6 +25,7 @@ sealed class NavDestination(val route: String, val icon: ImageVector, val label:
 val bottomNavItems = listOf(
     NavDestination.Home,
     NavDestination.Login,
+    NavDestination.FindDelivery,
     NavDestination.AddDelivery,
     NavDestination.Account,
 )

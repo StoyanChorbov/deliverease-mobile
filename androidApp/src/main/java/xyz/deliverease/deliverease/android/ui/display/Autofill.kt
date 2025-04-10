@@ -16,12 +16,13 @@ import com.mapbox.search.autofill.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.android.ui.input.DropdownWithLabel
+import xyz.deliverease.deliverease.android.ui.input.DropdownWithoutIcon
 import xyz.deliverease.deliverease.delivery.Location
 
 @Composable
 fun AutofillWithDropdown(modifier: Modifier = Modifier, label: String, items: List<String>, onChange: (String) -> Unit) {
     Column(modifier = modifier) {
-        DropdownWithLabel(
+        DropdownWithoutIcon(
             label = label,
             items = items,
             onSelectedChange = onChange

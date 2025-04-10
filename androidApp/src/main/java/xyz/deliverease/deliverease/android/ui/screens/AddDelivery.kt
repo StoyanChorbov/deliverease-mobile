@@ -40,14 +40,14 @@ fun AddDeliveryScreenRoot(
     addDeliveryViewModel: AddDeliveryViewModel = koinViewModel()
 ) {
     val navController = LocalNavController.current
+    val addDeliveryState by addDeliveryViewModel.addDeliveryState.collectAsState()
 
     AddDeliveryScreen(
         modifier = modifier,
-        addDeliveryState = addDeliveryViewModel.addDeliveryState.value,
+        addDeliveryState = addDeliveryState,
         setName = { addDeliveryViewModel.setName(it) },
         setStartLocation = { addDeliveryViewModel.setStartLocation(it) },
         setEndLocation = { addDeliveryViewModel.setEndLocation(it) },
-        setPrimaryRecipient = { addDeliveryViewModel.setPrimaryRecipient(it) },
         setDescription = { addDeliveryViewModel.setDescription(it) },
         setDeliveryCategory = { addDeliveryViewModel.setDeliveryCategory(it) },
         setIsFragile = { addDeliveryViewModel.setIsFragile(it) },
@@ -72,7 +72,6 @@ fun AddDeliveryScreen(
     setName: (String) -> Unit,
     setStartLocation: (Location) -> Unit,
     setEndLocation: (Location) -> Unit,
-    setPrimaryRecipient: (String) -> Unit,
     setDescription: (String) -> Unit,
     setDeliveryCategory: (DeliveryCategory) -> Unit,
     setIsFragile: (Boolean) -> Unit,
@@ -103,11 +102,6 @@ fun AddDeliveryScreen(
         LocationAutofill(
             label = "End Location",
             setLocation = setEndLocation
-        )
-        TextInputField(
-            label = "Primary Recipient",
-            value = addDeliveryState.primaryRecipient,
-            onChange = setPrimaryRecipient
         )
         TextInputBox(
             label = "Description",

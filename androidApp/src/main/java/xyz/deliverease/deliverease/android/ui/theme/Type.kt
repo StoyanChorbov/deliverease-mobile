@@ -10,5 +10,11 @@ val DelivereaseTypography = Typography(
     ),
     titleLarge = Typography().titleLarge.copy(
         fontWeight = FontWeight.SemiBold
-    )
+    ),
+    bodyLarge = Typography().bodyLarge.copy(
+        fontSize = 20.sp
+    ),
+    labelLarge = Typography().labelLarge.copy(
+        fontSize = 16.sp
+    ),
 )

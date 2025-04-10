@@ -8,7 +8,7 @@ data class DeliveryDetailsState(
     val startLocation: Location = Location(),
     val endLocation: Location = Location(),
     val description: String = "",
-    val deliveryCategory: DeliveryCategory = DeliveryCategory.OTHER,
+    val category: DeliveryCategory = DeliveryCategory.Other,
     val currentRecipient: String = "",
     val recipients: Set<String> = emptySet(),
     val isFragile: Boolean = false,

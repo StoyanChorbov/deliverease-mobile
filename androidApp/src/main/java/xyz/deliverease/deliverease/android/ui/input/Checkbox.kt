@@ -15,7 +15,7 @@ fun CheckboxWithLabel(
     modifier: Modifier = Modifier,
     label: String,
     checked: Boolean,
-    isError: Boolean = false,
+    hasError: Boolean = false,
     onChange: (Boolean) -> Unit
 ) {
     Row(
@@ -24,7 +24,7 @@ fun CheckboxWithLabel(
     ) {
         Checkbox(
             checked = checked,
-            colors = CheckboxDefaults.colors(checkedColor = if (isError) MaterialTheme.colorScheme.error else Color.Unspecified),
+            colors = CheckboxDefaults.colors(checkedColor = if (hasError) MaterialTheme.colorScheme.error else Color.Unspecified),
             onCheckedChange = onChange
         )
         Text(label)

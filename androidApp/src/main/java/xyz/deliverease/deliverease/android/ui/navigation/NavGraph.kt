@@ -5,11 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import xyz.deliverease.deliverease.android.ui.screens.AddDeliveryRecipientsScreen
 import xyz.deliverease.deliverease.android.ui.screens.AddDeliveryRecipientsScreenRoot
 import xyz.deliverease.deliverease.android.ui.screens.AddDeliveryScreenRoot
-import xyz.deliverease.deliverease.android.ui.screens.DeliveryDetailsScreen
-import xyz.deliverease.deliverease.android.ui.screens.HomeScreen
+import xyz.deliverease.deliverease.android.ui.screens.DeliveryDetailsScreenRoot
+import xyz.deliverease.deliverease.android.ui.screens.FindDeliveryScreenRoot
 import xyz.deliverease.deliverease.android.ui.screens.HomeScreenRoot
 import xyz.deliverease.deliverease.android.ui.screens.LoginScreenRoot
 import xyz.deliverease.deliverease.android.ui.screens.ProfileScreen
@@ -35,7 +34,7 @@ fun NavGraph(
             if (deliveryId == null)
                 HomeScreenRoot()
             else
-                DeliveryDetailsScreen(deliveryId = deliveryId)
+                DeliveryDetailsScreenRoot(deliveryId = deliveryId)
         }
         composable(NavDestination.Login.route) {
             LoginScreenRoot()
@@ -49,6 +48,19 @@ fun NavGraph(
         composable(NavDestination.AddDeliveryRecipients.route) {
             AddDeliveryRecipientsScreenRoot()
         }
+        composable(NavDestination.FindDelivery.route) {
+            FindDeliveryScreenRoot()
+        }
+        composable(NavDestination.FindableDelivery.route) {
+            FindDeliveryScreenRoot()
+        }
+//        composable("${NavDestination.FindDelivery.route}/{deliveryId}") {
+//            val deliveryId = it.arguments?.getString("deliveryId")
+//            if (deliveryId == null)
+//                HomeScreenRoot()
+//            else
+//                FindableDeliveryScreenRoot(deliveryId = deliveryId)
+//        }
         composable(NavDestination.Account.route) {
             ProfileScreen()
         }

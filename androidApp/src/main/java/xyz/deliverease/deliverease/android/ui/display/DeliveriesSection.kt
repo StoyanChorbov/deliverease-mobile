@@ -20,7 +20,6 @@ fun DeliveriesSection(
     deliveries: List<DeliveryListDTO>,
     handleNavigation: (String) -> Unit
 ) {
-
     Column(
         modifier = modifier
             .padding(top = 20.dp),

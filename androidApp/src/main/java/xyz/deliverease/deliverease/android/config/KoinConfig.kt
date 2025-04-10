@@ -1,9 +1,11 @@
 package xyz.deliverease.deliverease.android.config
 
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import xyz.deliverease.deliverease.delivery.DeliveryRepository
 import xyz.deliverease.deliverease.delivery.NavigationService
 import xyz.deliverease.deliverease.delivery.add.AddDeliveryViewModel
+import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsViewModel
 import xyz.deliverease.deliverease.delivery.home.HomeViewModel
 import xyz.deliverease.deliverease.user.UserRepository
 import xyz.deliverease.deliverease.user.login.LoginViewModel
@@ -17,9 +19,10 @@ import xyz.deliverease.deliverease.util.validation.ValidateTermsAndConditions
 import xyz.deliverease.deliverease.util.validation.ValidateUsername
 
 val androidAppModule = module {
-    // Repositories
+    // Repositories/Services - Business Logic
     single { UserRepository() }
     single { DeliveryRepository() }
+    single { NavigationService() }
 
     // Validation
     single { ValidateUsername() }
@@ -30,10 +33,10 @@ val androidAppModule = module {
     single { ValidateTermsAndConditions() }
 
     // ViewModels for screens
-    single {
+    viewModel {
         HomeViewModel(deliveryRepository = get())
     }
-    single {
+    viewModel {
         RegisterViewModel(
             userRepository = get(),
             usernameValidator = get(),
@@ -44,14 +47,19 @@ val androidAppModule = module {
             termsAndConditionsValidator = get()
         )
     }
-    single {
+    viewModel {
         LoginViewModel(
             userRepository = get(),
             usernameValidator = get(),
             passwordValidator = get()
         )
     }
-    single { ProfileViewModel(userRepository = get()) }
-    single { AddDeliveryViewModel(deliveryRepository = get()) }
-    single { NavigationService() }
+    viewModel { ProfileViewModel(userRepository = get()) }
+    viewModel { AddDeliveryViewModel(deliveryRepository = get()) }
+    viewModel { (deliveryId: String) ->
+        DeliveryDetailsViewModel(
+            deliveryId = deliveryId,
+            deliveryRepository = get()
+        )
+    }
 }

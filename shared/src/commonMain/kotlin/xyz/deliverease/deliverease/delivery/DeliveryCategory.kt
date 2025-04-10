@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class DeliveryCategory {
-    FOOD,
-    CLOTHES,
-    ELECTRONICS,
-    OTHER
+    Food,
+    Clothes,
+    Electronics,
+    Other,
 }

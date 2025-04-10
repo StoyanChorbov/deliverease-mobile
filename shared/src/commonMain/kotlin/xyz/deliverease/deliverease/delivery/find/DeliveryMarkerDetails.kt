@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.delivery.choose
+package xyz.deliverease.deliverease.delivery.find
 
 import kotlinx.serialization.Serializable
 import xyz.deliverease.deliverease.delivery.Location

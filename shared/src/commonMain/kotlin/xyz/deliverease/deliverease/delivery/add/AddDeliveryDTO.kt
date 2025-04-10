@@ -9,9 +9,8 @@ data class AddDeliveryDTO(
     val name: String,
     val startLocation: Location,
     val endLocation: Location,
-    val primaryRecipient: String,
     val description: String,
-    val deliveryCategory: DeliveryCategory,
+    val category: DeliveryCategory,
     val recipients: Set<String>,
     val isFragile: Boolean,
 )

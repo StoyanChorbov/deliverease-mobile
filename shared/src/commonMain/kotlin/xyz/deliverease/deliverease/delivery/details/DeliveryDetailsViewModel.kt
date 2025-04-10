@@ -5,11 +5,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.BaseViewModel
+import xyz.deliverease.deliverease.delivery.DeliveryCategory
 import xyz.deliverease.deliverease.delivery.DeliveryRepository
+import xyz.deliverease.deliverease.delivery.Location
 
 class DeliveryDetailsViewModel(
-    private val deliveryRepository: DeliveryRepository,
-    private val deliveryId: String
+    private val deliveryId: String,
+    private val deliveryRepository: DeliveryRepository
 ) : BaseViewModel() {
     private var _deliveryDetailsState = MutableStateFlow(DeliveryDetailsState())
     val deliveryDetailsState = _deliveryDetailsState.asStateFlow()
@@ -23,13 +25,25 @@ class DeliveryDetailsViewModel(
             _deliveryDetailsState.update {
                 it.copy(isLoading = true)
             }
-            val deliveryDetails = deliveryRepository.getDeliveryDetails(deliveryId)
+            //TODO: Get data from backend
+//            val deliveryDetails = deliveryRepository.getDeliveryDetails(deliveryId)
+            val deliveryDetails = DeliveryDetailsDTO(
+                id = deliveryId,
+                name = "Test Delivery",
+                description = "Some description this is",
+                startingLocation = Location("Plovdiv", 0.0, 0.0),
+                endingLocation = Location("Sofia", 1.0, 1.0),
+                category = DeliveryCategory.Other,
+                sender = "Pesho Maistora",
+                recipients = setOf("Recipient 1", "Recipient 2"),
+                isFragile = false
+            )
             _deliveryDetailsState.update {
                 it.copy(
                     name = deliveryDetails.name,
                     startLocation = deliveryDetails.startingLocation,
                     endLocation = deliveryDetails.endingLocation,
-                    deliveryCategory = deliveryDetails.category,
+                    category = deliveryDetails.category,
                     recipients = deliveryDetails.recipients
                 )
             }

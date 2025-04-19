@@ -23,8 +23,12 @@ class ProfileViewModel(private val userRepository: UserRepository) : BaseViewMod
             _profileState.emit(ProfileState(loading = true))
 
             try {
-                // TODO: Change to actual user
-                val profile = userRepository.login(UserLoginDTO("pesho", "parolica")).toProfileDTO()
+                val profile = userRepository.getProfile()
+
+                if (profile == null) {
+                    _profileState.emit(ProfileState(error = "Failed to load profile"))
+                    return@launch
+                }
 
                 _profileState.emit(ProfileState(profile = profile))
             } catch (e: Exception) {
@@ -32,7 +36,4 @@ class ProfileViewModel(private val userRepository: UserRepository) : BaseViewMod
             }
         }
     }
-
-    private fun UserDTO.toProfileDTO() =
-        ProfileDTO(username, firstName, lastName, email, phoneNumber)
 }

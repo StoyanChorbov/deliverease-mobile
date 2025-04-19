@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.screens
+package xyz.deliverease.deliverease.android.ui.screens.user
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -12,25 +12,27 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import xyz.deliverease.deliverease.android.ui.display.Loading
+import xyz.deliverease.deliverease.user.profile.ProfileState
 import xyz.deliverease.deliverease.user.profile.ProfileViewModel
 
-//TODO("Move to shared module as dto")
-data class Profile(
-    val firstName: String,
-    val lastName: String,
-    val username: String,
-    val email: String
-)
+@Composable
+fun ProfileScreenRoot(modifier: Modifier = Modifier, profileViewModel: ProfileViewModel = koinViewModel()) {
+    val profileState by profileViewModel.profileState.collectAsState()
+    ProfileScreen(modifier = modifier, profileState = profileState)
+}
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, profileViewModel: ProfileViewModel = koinViewModel()) {
-    val profileState by profileViewModel.profileState.collectAsState()
+fun ProfileScreen(modifier: Modifier = Modifier, profileState: ProfileState) {
+    val error = profileState.error
 
     if (profileState.loading) {
         Loading()
-    } else if (profileState.error != null) {
-        val error = profileState.error
-        // TODO("Handle error")
+    } else if (error != null) {
+        Text(
+            text = error,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error
+        )
     } else {
         profileState.profile.let {
             Column(modifier = modifier.padding(16.dp)) {

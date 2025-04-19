@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.screens
+package xyz.deliverease.deliverease.android.ui.screens.user
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -55,8 +55,7 @@ fun LoginScreenRoot(
         modifier = modifier,
         loginState = loginState,
         setUsername = { loginViewModel.onEvent(LoginEvent.Input.EnterUsername(it)) },
-//        setPassword = { loginViewModel.onEvent(LoginEvent.Input.EnterPassword(it)) },
-        setPassword = { loginViewModel.setPassword(it) },
+        setPassword = { loginViewModel.onEvent(LoginEvent.Input.EnterPassword(it)) },
         navigateToRegister = { navigateTo(navController = navController, NavDestination.Register.route) },
         onLogin = {
             loginViewModel.login()

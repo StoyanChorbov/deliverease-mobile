@@ -1,5 +1,6 @@
 package xyz.deliverease.deliverease.android.config
 
+import android.content.Context
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import xyz.deliverease.deliverease.delivery.DeliveryRepository
@@ -11,6 +12,7 @@ import xyz.deliverease.deliverease.user.UserRepository
 import xyz.deliverease.deliverease.user.login.LoginViewModel
 import xyz.deliverease.deliverease.user.profile.ProfileViewModel
 import xyz.deliverease.deliverease.user.register.RegisterViewModel
+import xyz.deliverease.deliverease.util.datastore.JwtTokenStorage
 import xyz.deliverease.deliverease.util.validation.ValidateEmail
 import xyz.deliverease.deliverease.util.validation.ValidateName
 import xyz.deliverease.deliverease.util.validation.ValidatePassword
@@ -19,8 +21,12 @@ import xyz.deliverease.deliverease.util.validation.ValidateTermsAndConditions
 import xyz.deliverease.deliverease.util.validation.ValidateUsername
 
 val androidAppModule = module {
+
+    // Utils - DataStore
+    single { JwtTokenStorage(context = get()) }
+
     // Repositories/Services - Business Logic
-    single { UserRepository() }
+    single { UserRepository(jwtTokenStorage = get()) }
     single { DeliveryRepository() }
     single { NavigationService() }
 

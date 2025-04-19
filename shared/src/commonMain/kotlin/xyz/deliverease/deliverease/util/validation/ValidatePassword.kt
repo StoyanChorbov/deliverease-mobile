@@ -16,11 +16,14 @@ class ValidatePassword {
             )
         }
 
-        val hasLettersAndNumbers = password.any { it.isLetter() } && password.any { it.isDigit() }
-        if (!hasLettersAndNumbers) {
+        val hasUppercaseAndLowercase = password.any { it.isUpperCase() } && password.any { it.isLowerCase() }
+        val hasNumbers = password.any { it.isDigit() }
+        val hasSpecialCharacters = password.any { !it.isLetterOrDigit() }
+
+        if (!hasUppercaseAndLowercase || !hasNumbers || !hasSpecialCharacters) {
             return ValidationResult(
                 success = false,
-                error = "Password must contain both letters and numbers"
+                error = "Password must contain uppercase and lowercase letters, numbers, and special characters"
             )
         }
 
@@ -29,6 +32,7 @@ class ValidatePassword {
 
     fun validate(password: String, confirmPassword: String): ValidationResult {
         val passwordValidation = validate(password)
+
         if (!passwordValidation.success) {
             return passwordValidation
         }

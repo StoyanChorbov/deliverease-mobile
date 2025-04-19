@@ -55,13 +55,11 @@ class LoginViewModel(
 
             validateFields()
 
-            // TODO: Add handling of parameter exceptions, server errors and validation errors...
-
             val currentState = _loginState.value
 
             if (currentState.isInputValid) {
                 try {
-                    val userDto = currentState.run {
+                    currentState.run {
                         userRepository.login(
                             UserLoginDTO(
                                 username = username,
@@ -69,7 +67,7 @@ class LoginViewModel(
                             )
                         )
                     }
-                    // TODO("Save user and token in storage for auto login")
+
                     _loginState.update {
                         it.copy(
                             isLoggedIn = true,
@@ -78,6 +76,7 @@ class LoginViewModel(
                             isLoading = false
                         )
                     }
+
                     _loginEvent.send(LoginEvent.Navigate.Home)
                 } catch (e: Exception) {
                     _loginState.update { it.copy(error = e.message, hasError = true) }

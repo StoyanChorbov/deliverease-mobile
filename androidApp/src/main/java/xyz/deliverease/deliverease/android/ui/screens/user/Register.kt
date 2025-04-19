@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.screens
+package xyz.deliverease.deliverease.android.ui.screens.user
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,26 +15,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import xyz.deliverease.deliverease.user.register.UserRegisterDTO
-import xyz.deliverease.deliverease.user.UserRepository
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
 import xyz.deliverease.deliverease.android.ui.input.PasswordInputField
 import xyz.deliverease.deliverease.android.ui.input.TextInputField
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
+import xyz.deliverease.deliverease.user.register.RegisterEvent
 import xyz.deliverease.deliverease.user.register.RegisterState
 import xyz.deliverease.deliverease.user.register.RegisterViewModel
 
@@ -44,27 +42,31 @@ fun RegisterScreenRoot(
     registerViewModel: RegisterViewModel = koinViewModel(),
 ) {
     val navController = LocalNavController.current
+    val registerState by registerViewModel.registerState.collectAsState()
+    val registerEvent by registerViewModel.registerEvent.collectAsState(initial = RegisterEvent.Idle)
+
+    LaunchedEffect(registerEvent) {
+        when (registerEvent) {
+            is RegisterEvent.Navigate.Login -> navigateTo(
+                navController = navController,
+                NavDestination.Login.route
+            )
+            else -> {}
+        }
+    }
 
     RegisterScreen(
         modifier = modifier,
-        registerState = registerViewModel.registerState.collectAsState().value,
-        setUsername = { registerViewModel.setUsername(it) },
-        setEmail = { registerViewModel.setEmail(it) },
-        setFirstName = { registerViewModel.setFirstName(it) },
-        setLastName = { registerViewModel.setLastName(it) },
-        setPhoneNumber = { registerViewModel.setPhoneNumber(it) },
-        setPassword = { registerViewModel.setPassword(it) },
-        setConfirmPassword = { registerViewModel.setConfirmPassword(it) },
+        registerState = registerState,
+        setUsername = { registerViewModel.onEvent(RegisterEvent.Input.EnterUsername(it)) },
+        setEmail = { registerViewModel.onEvent(RegisterEvent.Input.EnterEmail(it)) },
+        setFirstName = { registerViewModel.onEvent(RegisterEvent.Input.EnterFirstName(it)) },
+        setLastName = { registerViewModel.onEvent(RegisterEvent.Input.EnterLastName(it)) },
+        setPhoneNumber = { registerViewModel.onEvent(RegisterEvent.Input.EnterPhoneNumber(it)) },
+        setPassword = { registerViewModel.onEvent(RegisterEvent.Input.EnterPassword(it)) },
+        setConfirmPassword = { registerViewModel.onEvent(RegisterEvent.Input.EnterConfirmPassword(it)) },
         navigateToLogin = { navigateTo(navController = navController, NavDestination.Login.route) },
-        onRegister = {
-            registerViewModel.register()
-
-            val updatedState = registerViewModel.registerState.value
-
-            if (updatedState.isInputValid && !updatedState.hasError) {
-                navigateTo(navController = navController, NavDestination.Login.route)
-            }
-        }
+        onRegister = { registerViewModel.register() }
     )
 }
 

@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.screens
+package xyz.deliverease.deliverease.android.ui.screens.delivery
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

@@ -1,11 +1,10 @@
-package xyz.deliverease.deliverease.android.ui.screens
+package xyz.deliverease.deliverease.android.ui.screens.delivery
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import xyz.deliverease.deliverease.android.ui.display.DeliveryRow
 import xyz.deliverease.deliverease.delivery.find.FindableDelivery
 import xyz.deliverease.deliverease.delivery.home.DeliveryListDTO
 

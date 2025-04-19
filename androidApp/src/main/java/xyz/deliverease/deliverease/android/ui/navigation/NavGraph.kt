@@ -5,14 +5,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import xyz.deliverease.deliverease.android.ui.screens.AddDeliveryRecipientsScreenRoot
-import xyz.deliverease.deliverease.android.ui.screens.AddDeliveryScreenRoot
-import xyz.deliverease.deliverease.android.ui.screens.DeliveryDetailsScreenRoot
-import xyz.deliverease.deliverease.android.ui.screens.FindDeliveryScreenRoot
+import xyz.deliverease.deliverease.android.ui.screens.delivery.AddDeliveryRecipientsScreenRoot
+import xyz.deliverease.deliverease.android.ui.screens.delivery.AddDeliveryScreenRoot
+import xyz.deliverease.deliverease.android.ui.screens.delivery.DeliveryDetailsScreenRoot
+import xyz.deliverease.deliverease.android.ui.screens.delivery.FindDeliveryScreenRoot
 import xyz.deliverease.deliverease.android.ui.screens.HomeScreenRoot
-import xyz.deliverease.deliverease.android.ui.screens.LoginScreenRoot
-import xyz.deliverease.deliverease.android.ui.screens.ProfileScreen
-import xyz.deliverease.deliverease.android.ui.screens.RegisterScreenRoot
+import xyz.deliverease.deliverease.android.ui.screens.user.LoginScreenRoot
+import xyz.deliverease.deliverease.android.ui.screens.user.ProfileScreen
+import xyz.deliverease.deliverease.android.ui.screens.user.ProfileScreenRoot
+import xyz.deliverease.deliverease.android.ui.screens.user.RegisterScreenRoot
 
 // The NavGraph to map all routes/endpoint to their corresponding screens/composables
 @Composable
@@ -62,7 +63,7 @@ fun NavGraph(
 //                FindableDeliveryScreenRoot(deliveryId = deliveryId)
 //        }
         composable(NavDestination.Account.route) {
-            ProfileScreen()
+            ProfileScreenRoot()
         }
     }
 }

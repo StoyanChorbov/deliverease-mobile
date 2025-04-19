@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.screens
+package xyz.deliverease.deliverease.android.ui.screens.delivery
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column

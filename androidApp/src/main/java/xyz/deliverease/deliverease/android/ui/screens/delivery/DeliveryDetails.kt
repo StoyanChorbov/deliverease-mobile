@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.screens
+package xyz.deliverease.deliverease.android.ui.screens.delivery
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import xyz.deliverease.deliverease.android.ui.display.MapWithLiveLocationAndMarkers
-import xyz.deliverease.deliverease.android.ui.display.MapWithMarkers
 import xyz.deliverease.deliverease.delivery.Location
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsState
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsViewModel

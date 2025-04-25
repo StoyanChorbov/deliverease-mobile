@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.BaseViewModel
 import xyz.deliverease.deliverease.delivery.DeliveryCategory
 import xyz.deliverease.deliverease.delivery.DeliveryRepository
-import xyz.deliverease.deliverease.delivery.Location
+import xyz.deliverease.deliverease.delivery.LocationDto
 
 class DeliveryDetailsViewModel(
     private val deliveryId: String,
@@ -31,8 +31,8 @@ class DeliveryDetailsViewModel(
                 id = deliveryId,
                 name = "Test Delivery",
                 description = "Some description this is",
-                startingLocation = Location("Plovdiv", 0.0, 0.0),
-                endingLocation = Location("Sofia", 1.0, 1.0),
+                startingLocationDto = LocationDto("Plovdiv", 0.0, 0.0),
+                endingLocationDto = LocationDto("Sofia", 1.0, 1.0),
                 category = DeliveryCategory.Other,
                 sender = "Pesho Maistora",
                 recipients = setOf("Recipient 1", "Recipient 2"),
@@ -41,8 +41,8 @@ class DeliveryDetailsViewModel(
             _deliveryDetailsState.update {
                 it.copy(
                     name = deliveryDetails.name,
-                    startLocation = deliveryDetails.startingLocation,
-                    endLocation = deliveryDetails.endingLocation,
+                    startLocationDto = deliveryDetails.startingLocationDto,
+                    endLocationDto = deliveryDetails.endingLocationDto,
                     category = deliveryDetails.category,
                     recipients = deliveryDetails.recipients
                 )

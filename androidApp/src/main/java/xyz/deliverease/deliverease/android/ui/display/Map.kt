@@ -12,11 +12,10 @@ import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
-import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationState
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
 import xyz.deliverease.deliverease.android.R
-import xyz.deliverease.deliverease.delivery.Location
+import xyz.deliverease.deliverease.delivery.LocationDto
 import xyz.deliverease.deliverease.delivery.find.DeliveryMarkerDetails
 
 @Composable
@@ -40,7 +39,7 @@ fun BasicMap(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MapWithMarkers(modifier: Modifier = Modifier, points: Set<Location>) {
+fun MapWithMarkers(modifier: Modifier = Modifier, points: Set<LocationDto>) {
     val markers = points.map { Point.fromLngLat(it.longitude, it.latitude) }
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
@@ -72,8 +71,8 @@ fun MapWithMarkers(modifier: Modifier = Modifier, points: Set<Location>) {
 @Composable
 fun MapWithLiveLocationAndMarkers(
     modifier: Modifier = Modifier,
-    points: Set<Location>,
-    liveLocation: Location
+    points: Set<LocationDto>,
+    liveLocationDto: LocationDto
 ) {
     val markers = points.map { Point.fromLngLat(it.longitude, it.latitude) }
     val mapViewportState = rememberMapViewportState {
@@ -107,7 +106,7 @@ fun MapWithLiveLocationAndMarkers(
             }
         }
         PointAnnotation(
-            point = Point.fromLngLat(liveLocation.longitude, liveLocation.latitude),
+            point = Point.fromLngLat(liveLocationDto.longitude, liveLocationDto.latitude),
         ) {
             iconImage = liveLocationMarker
             iconColor = Color(0xFF00FF00) // Green color for live location
@@ -125,12 +124,12 @@ fun DeliveriesMapWithClickableMarkers(
     val markers = points.map {
         Pair(
             Point.fromLngLat(
-                it.startingLocation.longitude,
-                it.startingLocation.latitude
+                it.startingLocationDto.longitude,
+                it.startingLocationDto.latitude
             ),
             Point.fromLngLat(
-                it.endingLocation.longitude,
-                it.endingLocation.latitude
+                it.endingLocationDto.longitude,
+                it.endingLocationDto.latitude
             )
         )
     }

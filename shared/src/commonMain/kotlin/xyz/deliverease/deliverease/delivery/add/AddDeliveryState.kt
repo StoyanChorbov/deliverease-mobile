@@ -1,12 +1,12 @@
 package xyz.deliverease.deliverease.delivery.add
 
 import xyz.deliverease.deliverease.delivery.DeliveryCategory
-import xyz.deliverease.deliverease.delivery.Location
+import xyz.deliverease.deliverease.delivery.LocationDto
 
 data class AddDeliveryState(
     val name: String = "",
-    val startLocation: Location = Location(),
-    val endLocation: Location = Location(),
+    val startLocationDto: LocationDto = LocationDto(),
+    val endLocationDto: LocationDto = LocationDto(),
     val description: String = "",
     val category: DeliveryCategory = DeliveryCategory.Other,
     val currentRecipient: String = "",

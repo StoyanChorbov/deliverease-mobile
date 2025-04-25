@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.BaseViewModel
 import xyz.deliverease.deliverease.delivery.DeliveryCategory
 import xyz.deliverease.deliverease.delivery.DeliveryRepository
-import xyz.deliverease.deliverease.delivery.Location
+import xyz.deliverease.deliverease.delivery.LocationDto
 
 class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) : BaseViewModel() {
 
@@ -62,15 +62,15 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
         }
     }
 
-    fun setStartLocation(startLocation: Location) {
+    fun setStartLocation(startLocationDto: LocationDto) {
         _addDeliveryState.update {
-            it.copy(startLocation = startLocation)
+            it.copy(startLocationDto = startLocationDto)
         }
     }
 
-    fun setEndLocation(endLocation: Location) {
+    fun setEndLocation(endLocationDto: LocationDto) {
         _addDeliveryState.update {
-            it.copy(endLocation = endLocation)
+            it.copy(endLocationDto = endLocationDto)
         }
     }
 
@@ -116,8 +116,8 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
     private fun AddDeliveryState.toDTO(): AddDeliveryDTO {
         return AddDeliveryDTO(
             name = name,
-            startLocation = startLocation,
-            endLocation = endLocation,
+            startLocationDto = startLocationDto,
+            endLocationDto = endLocationDto,
             description = description,
             category = category,
             recipients = recipients,

@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import xyz.deliverease.deliverease.delivery.home.DeliveryListDTO
+import xyz.deliverease.deliverease.DeliveryListDTO
 
 @Composable
 fun DeliveriesSection(

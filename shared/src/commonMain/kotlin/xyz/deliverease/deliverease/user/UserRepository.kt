@@ -1,6 +1,7 @@
 package xyz.deliverease.deliverease.user
 
 import io.ktor.client.call.body
+import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
@@ -77,5 +78,54 @@ class UserRepository(
             throw Exception("Failed to get profile")
 
         return res.body()
+    }
+
+    suspend fun loginWithToken() {
+        val authToken =
+            jwtTokenStorage.getJwtToken() ?: throw IllegalArgumentException("No auth token found")
+
+        var res = client.get {
+            url("$baseUrl/users/login")
+            contentType(ContentType.Application.Json)
+            headers {
+                append("Bearer", authToken)
+            }
+        }
+
+        if (res.status == HttpStatusCode.Unauthorized) {
+            val refreshToken = jwtTokenStorage.getRefreshToken()
+                ?: throw IllegalArgumentException("No refresh token found")
+            res = client.get {
+                url("$baseUrl/users/refresh")
+                contentType(ContentType.Application.Json)
+                setBody(refreshToken)
+            }
+        }
+
+        if (!res.status.isSuccess())
+            throw Exception("Failed to get profile")
+
+        return res.body()
+    }
+
+    suspend fun refreshTokens() {
+        val refreshToken = jwtTokenStorage.getRefreshToken()
+            ?: throw IllegalArgumentException("No refresh token found")
+
+        val res = client.post {
+            url("$baseUrl/users/refresh")
+            contentType(ContentType.Application.Json)
+            setBody(refreshToken)
+        }
+
+        if (!res.status.isSuccess())
+            throw Exception("Failed to refresh tokens")
+
+        val tokens: TokensResponse = res.body()
+
+        jwtTokenStorage.saveTokens(
+            authToken = tokens.accessToken,
+            refreshToken = tokens.refreshToken
+        )
     }
 }

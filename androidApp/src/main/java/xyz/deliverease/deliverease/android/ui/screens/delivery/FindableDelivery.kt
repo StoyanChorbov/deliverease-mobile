@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import xyz.deliverease.deliverease.android.ui.display.MapWithMarkers
 import xyz.deliverease.deliverease.delivery.DeliveryCategory
-import xyz.deliverease.deliverease.delivery.Location
+import xyz.deliverease.deliverease.delivery.LocationDto
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsDTO
-import xyz.deliverease.deliverease.util.validation.toPascalCase
+import xyz.deliverease.deliverease.util.toPascalCase
 
 @Composable
 fun FindableDeliveryScreenRoot(modifier: Modifier = Modifier) {
@@ -27,12 +27,12 @@ fun FindableDeliveryScreenRoot(modifier: Modifier = Modifier) {
         description = "Delivery Description",
         sender = "Sender",
         recipients = setOf("Recipient"),
-        startingLocation = Location(
+        startingLocationDto = LocationDto(
             name = "Start Location",
             latitude = 0.0,
             longitude = 0.0
         ),
-        endingLocation = Location(
+        endingLocationDto = LocationDto(
             name = "End Location",
             latitude = 1.0,
             longitude = 1.0
@@ -46,7 +46,7 @@ fun FindableDeliveryScreenRoot(modifier: Modifier = Modifier) {
 @Composable
 fun FindableDeliveryScreen(modifier: Modifier = Modifier, delivery: DeliveryDetailsDTO) {
     Column {
-        MapWithMarkers(points = setOf(delivery.startingLocation, delivery.endingLocation))
+        MapWithMarkers(points = setOf(delivery.startingLocationDto, delivery.endingLocationDto))
         OutlinedCard(
             modifier = modifier
                 .fillMaxWidth()
@@ -64,7 +64,7 @@ fun FindableDeliveryScreen(modifier: Modifier = Modifier, delivery: DeliveryDeta
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Text(
-                    text = "${delivery.startingLocation.name} -> ${delivery.endingLocation.name}",
+                    text = "${delivery.startingLocationDto.name} -> ${delivery.endingLocationDto.name}",
                     style = MaterialTheme.typography.labelLarge
                 )
                 Text(

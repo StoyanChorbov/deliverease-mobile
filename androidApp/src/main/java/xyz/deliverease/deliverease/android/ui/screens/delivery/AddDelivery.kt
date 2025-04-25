@@ -28,7 +28,7 @@ import xyz.deliverease.deliverease.android.ui.input.TextInputBox
 import xyz.deliverease.deliverease.android.ui.input.TextInputField
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 import xyz.deliverease.deliverease.delivery.DeliveryCategory
-import xyz.deliverease.deliverease.delivery.Location
+import xyz.deliverease.deliverease.delivery.LocationDto
 import xyz.deliverease.deliverease.delivery.add.AddDeliveryEvent
 import xyz.deliverease.deliverease.delivery.add.AddDeliveryState
 import xyz.deliverease.deliverease.delivery.add.AddDeliveryViewModel
@@ -69,8 +69,8 @@ fun AddDeliveryScreen(
     modifier: Modifier = Modifier,
     addDeliveryState: AddDeliveryState,
     setName: (String) -> Unit,
-    setStartLocation: (Location) -> Unit,
-    setEndLocation: (Location) -> Unit,
+    setStartLocation: (LocationDto) -> Unit,
+    setEndLocation: (LocationDto) -> Unit,
     setDescription: (String) -> Unit,
     setDeliveryCategory: (DeliveryCategory) -> Unit,
     setIsFragile: (Boolean) -> Unit,

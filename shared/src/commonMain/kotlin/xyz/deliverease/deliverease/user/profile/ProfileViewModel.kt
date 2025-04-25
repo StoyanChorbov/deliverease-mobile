@@ -5,9 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.BaseViewModel
-import xyz.deliverease.deliverease.user.UserDTO
 import xyz.deliverease.deliverease.user.UserRepository
-import xyz.deliverease.deliverease.user.login.UserLoginDTO
 
 class ProfileViewModel(private val userRepository: UserRepository) : BaseViewModel() {
 

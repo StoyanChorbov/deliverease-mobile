@@ -1,6 +1,5 @@
 package xyz.deliverease.deliverease.android.config
 
-import android.content.Context
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import xyz.deliverease.deliverease.delivery.DeliveryRepository
@@ -8,6 +7,7 @@ import xyz.deliverease.deliverease.delivery.NavigationService
 import xyz.deliverease.deliverease.delivery.add.AddDeliveryViewModel
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsViewModel
 import xyz.deliverease.deliverease.delivery.home.HomeViewModel
+import xyz.deliverease.deliverease.main.MainViewModel
 import xyz.deliverease.deliverease.user.UserRepository
 import xyz.deliverease.deliverease.user.login.LoginViewModel
 import xyz.deliverease.deliverease.user.profile.ProfileViewModel
@@ -27,7 +27,7 @@ val androidAppModule = module {
 
     // Repositories/Services - Business Logic
     single { UserRepository(jwtTokenStorage = get()) }
-    single { DeliveryRepository() }
+    single { DeliveryRepository(jwtTokenStorage = get(), userRepository = get()) }
     single { NavigationService() }
 
     // Validation
@@ -39,6 +39,9 @@ val androidAppModule = module {
     single { ValidateTermsAndConditions() }
 
     // ViewModels for screens
+    viewModel {
+        MainViewModel(userRepository = get())
+    }
     viewModel {
         HomeViewModel(deliveryRepository = get())
     }

@@ -14,8 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import xyz.deliverease.deliverease.delivery.home.DeliveryListDTO
-import xyz.deliverease.deliverease.util.validation.toPascalCase
+import xyz.deliverease.deliverease.DeliveryListDTO
+import xyz.deliverease.deliverease.util.toPascalCase
 
 @Composable
 fun DeliveryRow(
@@ -45,8 +45,8 @@ fun DeliveryRow(
         DeliveryRowTitle(
             title = "${delivery.name} (${delivery.category.toPascalCase()})" +
                     if (delivery.isFragile) " (fragile)" else "",
-            startLocation = delivery.startingLocation.name,
-            endLocation = delivery.endingLocation.name,
+            startLocation = delivery.startingLocationDto.name,
+            endLocation = delivery.endingLocationDto.name,
             onClick = handleNavigation
         )
     }

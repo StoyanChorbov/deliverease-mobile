@@ -15,9 +15,8 @@ import com.mapbox.search.autofill.AddressAutofillSuggestion
 import com.mapbox.search.autofill.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import xyz.deliverease.deliverease.android.ui.input.DropdownWithLabel
 import xyz.deliverease.deliverease.android.ui.input.DropdownWithoutIcon
-import xyz.deliverease.deliverease.delivery.Location
+import xyz.deliverease.deliverease.delivery.LocationDto
 
 @Composable
 fun AutofillWithDropdown(modifier: Modifier = Modifier, label: String, items: List<String>, onChange: (String) -> Unit) {
@@ -34,7 +33,7 @@ fun AutofillWithDropdown(modifier: Modifier = Modifier, label: String, items: Li
 fun LocationAutofill(
     modifier: Modifier = Modifier,
     label: String,
-    setLocation: (Location) -> Unit
+    setLocation: (LocationDto) -> Unit
 ) {
     val addressAutofill = AddressAutofill.create()
     var input by remember { mutableStateOf("") }
@@ -74,7 +73,7 @@ fun LocationAutofill(
                 TODO("Handle error")
             }
             setLocation(
-                Location(
+                LocationDto(
                     selectedLocation.name,
                     selectedLocation.coordinate?.latitude() ?: 0.0,
                     selectedLocation.coordinate?.longitude() ?: 0.0

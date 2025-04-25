@@ -5,39 +5,45 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import xyz.deliverease.deliverease.delivery.find.FindableDelivery
-import xyz.deliverease.deliverease.delivery.home.DeliveryListDTO
+import xyz.deliverease.deliverease.DeliveryListDTO
+import xyz.deliverease.deliverease.android.LocalNavController
+import xyz.deliverease.deliverease.android.navigateTo
+import xyz.deliverease.deliverease.android.ui.display.DeliveryRow
+import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
+import xyz.deliverease.deliverease.delivery.find.FindableDeliveryDto
 
 @Composable
 fun FindDeliveryScreenRoot(modifier: Modifier = Modifier) {
-    FindDeliveryScreen(modifier = modifier, deliveries = emptySet())
+    val navController = LocalNavController.current
+    FindDeliveryScreen(modifier = modifier, deliveries = emptySet(), handleNavigation = {
+        navigateTo(navController, "NavDestination.DeliveryDetails.route/$it")
+    })
 }
 
 @Composable
-fun FindDeliveryScreen(modifier: Modifier, deliveries: Set<DeliveryListDTO>) {
+fun FindDeliveryScreen(modifier: Modifier, deliveries: Set<DeliveryListDTO>, handleNavigation: (String) -> Unit) {
     Column(modifier = modifier) {
-        FindableDeliveryScreenRoot()
-//        if (deliveries.isNotEmpty()) {
-//            deliveries.forEach {
-////                FindableDeliveryCard(delivery = it)
-//                DeliveryRow(
-//                    delivery = it,
-//                    handleNavigation = { /* TODO: Handle navigation */ },
-//                )
-//            }
-//        } else {
-//            Text(text = "No deliveries found")
-//        }
+        if (deliveries.isNotEmpty()) {
+            deliveries.forEach {
+//                FindableDeliveryCard(delivery = it)
+                DeliveryRow(
+                    delivery = it,
+                    handleNavigation = { handleNavigation(it.id) },
+                )
+            }
+        } else {
+            Text(text = "No deliveries found")
+        }
     }
 }
 
 @Composable
-fun FindableDeliveryCard(modifier: Modifier = Modifier, delivery: FindableDelivery) {
+fun FindableDeliveryCard(modifier: Modifier = Modifier, delivery: FindableDeliveryDto) {
     Card(modifier = modifier) {
         Column {
             Text(text = delivery.name)
-            Text(text = delivery.startingLocation.toString())
-            Text(text = delivery.endingLocation.toString())
+            Text(text = delivery.startingLocationDto.toString())
+            Text(text = delivery.endingLocationDto.toString())
             Text(text = delivery.category.toString())
             Text(text = delivery.isFragile.toString())
         }

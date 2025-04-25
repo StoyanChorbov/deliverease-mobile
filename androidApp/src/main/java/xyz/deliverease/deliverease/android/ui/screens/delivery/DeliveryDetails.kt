@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import xyz.deliverease.deliverease.android.ui.display.MapWithLiveLocationAndMarkers
-import xyz.deliverease.deliverease.delivery.Location
+import xyz.deliverease.deliverease.delivery.LocationDto
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsState
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsViewModel
 
@@ -36,8 +36,8 @@ fun DeliveryDetailsScreen(
 ) {
     Column(modifier = modifier) {
         MapWithLiveLocationAndMarkers(
-            points = setOf(deliveryDetailsState.startLocation, deliveryDetailsState.endLocation),
-            liveLocation = Location("Name", 42.315073, 24.627979),
+            points = setOf(deliveryDetailsState.startLocationDto, deliveryDetailsState.endLocationDto),
+            liveLocationDto = LocationDto("Name", 42.315073, 24.627979),
         )
         Text(
             text = "Name: ${deliveryDetailsState.name}",

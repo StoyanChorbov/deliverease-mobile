@@ -16,6 +16,7 @@ mapbox-navigation = "2.14.0"
 mapbox-search = "2.8.0-rc.1"
 navigationRuntimeKtx = "2.8.8"
 navigationCompose = "2.8.8"
+playServicesLocation = "21.3.0"
 slf4jSimple = "2.0.7"
 
 [libraries]
@@ -51,6 +52,7 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4jSimple" }
 
 [plugins]

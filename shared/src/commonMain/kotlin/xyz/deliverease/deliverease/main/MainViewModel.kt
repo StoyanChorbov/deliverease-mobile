@@ -21,7 +21,7 @@ class MainViewModel(private val userRepository: UserRepository) : BaseViewModel(
             _mainState.emit(MainState(loading = true))
 
             try {
-                userRepository.loginWithToken()
+                userRepository.getProfile()
                 _mainState.emit(MainState(loading = false, isLoggedIn = true))
             } catch (e: Exception) {
                 _mainState.emit(MainState(error = e.message))

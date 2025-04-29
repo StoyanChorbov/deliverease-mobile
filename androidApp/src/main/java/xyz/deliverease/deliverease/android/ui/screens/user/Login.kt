@@ -27,9 +27,9 @@ import androidx.compose.ui.unit.sp
 import org.koin.androidx.compose.koinViewModel
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
-import xyz.deliverease.deliverease.android.ui.display.Loading
-import xyz.deliverease.deliverease.android.ui.input.PasswordInputField
-import xyz.deliverease.deliverease.android.ui.input.TextInputField
+import xyz.deliverease.deliverease.android.ui.components.display.LoadingIndicator
+import xyz.deliverease.deliverease.android.ui.components.input.PasswordInputField
+import xyz.deliverease.deliverease.android.ui.components.input.TextInputField
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 import xyz.deliverease.deliverease.user.login.LoginEvent
 import xyz.deliverease.deliverease.user.login.LoginState
@@ -45,8 +45,12 @@ fun LoginScreenRoot(
     val loginEvent by loginViewModel.loginEvent.collectAsState(initial = LoginEvent.Idle)
 
     LaunchedEffect(loginEvent) {
-        when(loginEvent) {
-            is LoginEvent.Navigate.Home -> navigateTo(navController = navController, NavDestination.Home.route)
+        when (loginEvent) {
+            is LoginEvent.Navigate.Home -> navigateTo(
+                navController = navController,
+                NavDestination.Home.route
+            )
+
             else -> {}
         }
     }
@@ -56,7 +60,12 @@ fun LoginScreenRoot(
         loginState = loginState,
         setUsername = { loginViewModel.onEvent(LoginEvent.Input.EnterUsername(it)) },
         setPassword = { loginViewModel.onEvent(LoginEvent.Input.EnterPassword(it)) },
-        navigateToRegister = { navigateTo(navController = navController, NavDestination.Register.route) },
+        navigateToRegister = {
+            navigateTo(
+                navController = navController,
+                NavDestination.Register.route
+            )
+        },
         onLogin = {
             loginViewModel.login()
         }
@@ -133,8 +142,15 @@ fun LoginScreen(
             }
         }
         if (loginState.isLoading) {
-            Loading()
+            LoadingIndicator()
         } else {
+            if (loginState.hasError) {
+                Text(
+                    text = loginState.error ?: "An error occurred",
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 16.sp
+                )
+            }
             ElevatedButton(
                 onClick = onLogin,
                 colors = ButtonDefaults.buttonColors(

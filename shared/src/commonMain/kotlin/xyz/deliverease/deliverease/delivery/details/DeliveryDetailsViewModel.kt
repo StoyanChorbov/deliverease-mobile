@@ -25,19 +25,7 @@ class DeliveryDetailsViewModel(
             _deliveryDetailsState.update {
                 it.copy(isLoading = true)
             }
-            //TODO: Get data from backend
-//            val deliveryDetails = deliveryRepository.getDeliveryDetails(deliveryId)
-            val deliveryDetails = DeliveryDetailsDTO(
-                id = deliveryId,
-                name = "Test Delivery",
-                description = "Some description this is",
-                startingLocationDto = LocationDto("Plovdiv", 0.0, 0.0),
-                endingLocationDto = LocationDto("Sofia", 1.0, 1.0),
-                category = DeliveryCategory.Other,
-                sender = "Pesho Maistora",
-                recipients = setOf("Recipient 1", "Recipient 2"),
-                isFragile = false
-            )
+            val deliveryDetails = deliveryRepository.getDeliveryDetails(deliveryId)
             _deliveryDetailsState.update {
                 it.copy(
                     name = deliveryDetails.name,

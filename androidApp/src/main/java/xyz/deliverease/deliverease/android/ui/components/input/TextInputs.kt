@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.input
+package xyz.deliverease.deliverease.android.ui.components.input
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Visibility

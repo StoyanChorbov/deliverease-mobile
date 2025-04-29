@@ -12,35 +12,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import xyz.deliverease.deliverease.android.ui.display.MapWithMarkers
+import xyz.deliverease.deliverease.android.ui.components.display.MapWithMarkers
 import xyz.deliverease.deliverease.delivery.DeliveryCategory
 import xyz.deliverease.deliverease.delivery.LocationDto
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsDTO
+import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsViewModel
 import xyz.deliverease.deliverease.util.toPascalCase
 
 @Composable
 fun FindableDeliveryScreenRoot(modifier: Modifier = Modifier) {
-    // TODO: Change with viewmodel
-    val del = DeliveryDetailsDTO(
-        id = "1",
-        name = "Delivery Name",
-        description = "Delivery Description",
-        sender = "Sender",
-        recipients = setOf("Recipient"),
-        startingLocationDto = LocationDto(
-            name = "Start Location",
-            latitude = 0.0,
-            longitude = 0.0
-        ),
-        endingLocationDto = LocationDto(
-            name = "End Location",
-            latitude = 1.0,
-            longitude = 1.0
-        ),
-        category = DeliveryCategory.Food,
-        isFragile = false
-    )
-    FindableDeliveryScreen(modifier = modifier, delivery = del)
+//    val del = viewModel.deliveryDetailsState.value
+//    FindableDeliveryScreen(modifier = modifier, delivery = DeliveryDetailsDTO())
 }
 
 @Composable
@@ -64,7 +46,7 @@ fun FindableDeliveryScreen(modifier: Modifier = Modifier, delivery: DeliveryDeta
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Text(
-                    text = "${delivery.startingLocationDto.name} -> ${delivery.endingLocationDto.name}",
+                    text = "${delivery.startingLocationDto.place} -> ${delivery.endingLocationDto.place}",
                     style = MaterialTheme.typography.labelLarge
                 )
                 Text(

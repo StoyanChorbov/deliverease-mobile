@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.sp
 import org.koin.androidx.compose.koinViewModel
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
-import xyz.deliverease.deliverease.android.ui.input.PasswordInputField
-import xyz.deliverease.deliverease.android.ui.input.TextInputField
+import xyz.deliverease.deliverease.android.ui.components.input.PasswordInputField
+import xyz.deliverease.deliverease.android.ui.components.input.TextInputField
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 import xyz.deliverease.deliverease.user.register.RegisterEvent
 import xyz.deliverease.deliverease.user.register.RegisterState

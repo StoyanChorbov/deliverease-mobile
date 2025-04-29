@@ -27,6 +27,67 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
         _addDeliveryState.update { AddDeliveryState() }
     }
 
+    fun onEvent(event: AddDeliveryEvent) {
+        when (event) {
+            is AddDeliveryEvent.Input.SetName -> {
+                _addDeliveryState.update {
+                    it.copy(name = event.value)
+                }
+            }
+            is AddDeliveryEvent.Input.SetDescription -> {
+                _addDeliveryState.update {
+                    it.copy(description = event.value)
+                }
+            }
+            is AddDeliveryEvent.Input.SetDeliveryCategory -> {
+                _addDeliveryState.update {
+                    it.copy(category = event.value)
+                }
+            }is AddDeliveryEvent.Input.SetStartLocation -> {
+                _addDeliveryState.update {
+                    it.copy(startLocationDto = event.place, startLocationRegion = event.region)
+                }
+            }
+            is AddDeliveryEvent.Input.SetEndLocation -> {
+                _addDeliveryState.update {
+                    it.copy(endLocationDto = event.place, endLocationRegion = event.region)
+                }
+            }
+            is AddDeliveryEvent.Input.SetIsFragile -> {
+                _addDeliveryState.update {
+                    it.copy(isFragile = event.value)
+                }
+            }
+            is AddDeliveryEvent.Input.ChangeCurrentRecipient -> {
+                _addDeliveryState.update {
+                    it.copy(currentRecipient = event.value)
+                }
+            }
+            is AddDeliveryEvent.Input.AddRecipient -> {
+                _addDeliveryState.update {
+                    it.copy(
+                        currentRecipient = "",
+                        recipients = it.recipients + it.currentRecipient
+                    )
+                }
+            }
+            is AddDeliveryEvent.Input.RemoveRecipient -> {
+                _addDeliveryState.update {
+                    it.copy(recipients = it.recipients - event.value)
+                }
+            }
+            is AddDeliveryEvent.Submit -> {
+                addDelivery()
+            }
+            is AddDeliveryEvent.Error -> {
+                _addDeliveryState.update {
+                    it.copy(error = event.message, hasError = true)
+                }
+            }
+            else -> {}
+        }
+    }
+
     fun addDelivery() {
         scope.launch {
             _addDeliveryState.update {
@@ -43,6 +104,7 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
                     _addDeliveryState.update {
                         it.copy(isLoading = false)
                     }
+                    _addDeliveryEvent.send(AddDeliveryEvent.Navigate)
                 } catch (e: Exception) {
                     _addDeliveryState.update {
                         it.copy(error = e.message, hasError = true, isLoading = false)
@@ -53,71 +115,15 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
     }
 
     private fun validateFields() {
-        //TODO("Not yet implemented")
-    }
-
-    fun setName(name: String) {
-        _addDeliveryState.update {
-            it.copy(name = name)
-        }
-    }
-
-    fun setStartLocation(startLocationDto: LocationDto) {
-        _addDeliveryState.update {
-            it.copy(startLocationDto = startLocationDto)
-        }
-    }
-
-    fun setEndLocation(endLocationDto: LocationDto) {
-        _addDeliveryState.update {
-            it.copy(endLocationDto = endLocationDto)
-        }
-    }
-
-    fun setDescription(description: String) {
-        _addDeliveryState.update {
-            it.copy(description = description)
-        }
-    }
-
-    fun setDeliveryCategory(deliveryCategory: DeliveryCategory) {
-        _addDeliveryState.update {
-            it.copy(category = deliveryCategory)
-        }
-    }
-
-    fun setIsFragile(isFragile: Boolean) {
-        _addDeliveryState.update {
-            it.copy(isFragile = isFragile)
-        }
-    }
-
-    fun setCurrentRecipient(currentRecipient: String) {
-        _addDeliveryState.update {
-            it.copy(currentRecipient = currentRecipient)
-        }
-    }
-
-    fun addRecipient() {
-        _addDeliveryState.update {
-            it.copy(
-                currentRecipient = "",
-                recipients = it.recipients + it.currentRecipient
-            )
-        }
-    }
-
-    fun removeRecipient(recipient: String) {
-        _addDeliveryState.update {
-            it.copy(recipients = it.recipients - recipient)
-        }
     }
 
     private fun AddDeliveryState.toDTO(): AddDeliveryDTO {
         return AddDeliveryDTO(
             name = name,
-            startLocationDto = startLocationDto,
-            endLocationDto = endLocationDto,
+            startLocation = startLocationDto,
+            startLocationRegion = startLocationRegion,
+            endLocation = endLocationDto,
+            endLocationRegion = endLocationRegion,
             description = description,
             category = category,
             recipients = recipients,

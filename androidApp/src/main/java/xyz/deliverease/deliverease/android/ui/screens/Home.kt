@@ -13,14 +13,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import org.koin.androidx.compose.koinViewModel
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
-import xyz.deliverease.deliverease.android.ui.display.MapWithMarkers
-import xyz.deliverease.deliverease.android.ui.display.DeliveriesSection
+import xyz.deliverease.deliverease.android.ui.components.display.DeliveriesSection
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
-import xyz.deliverease.deliverease.delivery.DeliveryCategory
 import xyz.deliverease.deliverease.delivery.LocationDto
 import xyz.deliverease.deliverease.DeliveryListDTO
+import xyz.deliverease.deliverease.android.ui.components.display.MapWithLiveLocationAndMarkers
+import xyz.deliverease.deliverease.android.ui.location.currentLocation
 import xyz.deliverease.deliverease.delivery.home.HomeViewModel
-import java.util.UUID
 
 @Composable
 fun HomeScreen(
@@ -32,15 +31,19 @@ fun HomeScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        MapWithMarkers(
-            points = setOf(
-                LocationDto(name = "Start Location 1", latitude = 42.315073, longitude = 24.627979),
-                LocationDto(name = "End Location 1", latitude = 44.2, longitude = 25.2),
-                LocationDto(name = "Start Location 2", latitude = 45.4, longitude = 21.2),
-                LocationDto(name = "End Location 2", latitude = 43.2, longitude = 22.2),
-                LocationDto(name = "Start Location 3", latitude = 41.2, longitude = 23.2),
-                LocationDto(name = "End Location 3", latitude = 40.2, longitude = 24.2),
-            )
+        val location = currentLocation() ?: return
+        MapWithLiveLocationAndMarkers(
+            points = ((toDeliver + toReceive)
+                .map { it.startingLocationDto } +
+                    (toDeliver + toReceive)
+                        .map { it.endingLocationDto })
+                .toSet(),
+            liveLocationDto = LocationDto(
+                place = "Karlovo",
+                region = "Plovdiv",
+                latitude = location.latitude,
+                longitude = location.longitude
+            ),
         )
         DeliveriesSection(
             label = "Packages to deliver",
@@ -66,7 +69,6 @@ fun HomeScreenRoot(
 
     val state by homeViewModel.homeState.collectAsState()
 
-    // TODO: Move to page with map
     AnimatedVisibility(
         visible = isVisible,
         enter = fadeIn(),

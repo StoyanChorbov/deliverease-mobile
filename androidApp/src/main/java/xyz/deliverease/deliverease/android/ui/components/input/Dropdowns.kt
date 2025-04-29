@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.input
+package xyz.deliverease.deliverease.android.ui.components.input
 
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,7 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import java.time.LocalDateTime
+import com.mapbox.geojson.Point
+import com.mapbox.search.autocomplete.PlaceAutocompleteAddress
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,16 +61,17 @@ fun DropdownWithLabel(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownWithoutIcon(
+fun AddressDropdown(
     modifier: Modifier = Modifier,
     label: String,
-    items: List<String>,
+    input: String,
+    items: Map<PlaceAutocompleteAddress, Point>,
     readOnly: Boolean = false,
-    onSelectedChange: (String) -> Unit
+    onInputChange: (String) -> Unit,
+    onSelectedChange: (Map.Entry<PlaceAutocompleteAddress, Point>) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var timer = LocalDateTime.now().second // TODO: Swap with a better timer to track delay for dropdown
-    var selected by rememberSaveable { mutableStateOf(items.last()) }
+    var selected by rememberSaveable { mutableStateOf<PlaceAutocompleteAddress?>(null) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -77,15 +79,10 @@ fun DropdownWithoutIcon(
         modifier = modifier
     ) {
         OutlinedTextField(
-            value = selected,
+            value = input,
             onValueChange = {
-                selected = it
-                if (LocalDateTime.now().second - timer > 5) {
-                    expanded = true
-                    timer = LocalDateTime.now().second
-                } else {
-                    expanded = false
-                }
+                onInputChange(it)
+                selected = null
             },
             readOnly = readOnly,
             label = { Text(label) },
@@ -95,9 +92,9 @@ fun DropdownWithoutIcon(
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             items.forEach {
                 DropdownMenuItem(
-                    text = { Text(it) },
+                    text = { Text("${it.key.place}, ${it.key.region}") },
                     onClick = {
-                        selected = it
+                        selected = it.key
                         onSelectedChange(it)
                         expanded = false
                     }

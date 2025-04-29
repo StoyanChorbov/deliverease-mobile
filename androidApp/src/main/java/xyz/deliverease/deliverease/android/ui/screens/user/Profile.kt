@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
-import xyz.deliverease.deliverease.android.ui.display.Loading
+import xyz.deliverease.deliverease.android.ui.components.display.LoadingIndicator
 import xyz.deliverease.deliverease.user.profile.ProfileState
 import xyz.deliverease.deliverease.user.profile.ProfileViewModel
 
@@ -26,7 +26,7 @@ fun ProfileScreen(modifier: Modifier = Modifier, profileState: ProfileState) {
     val error = profileState.error
 
     if (profileState.loading) {
-        Loading()
+        LoadingIndicator()
     } else if (error != null) {
         Text(
             text = error,

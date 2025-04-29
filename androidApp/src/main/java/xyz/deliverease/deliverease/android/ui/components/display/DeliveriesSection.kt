@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.display
+package xyz.deliverease.deliverease.android.ui.components.display
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

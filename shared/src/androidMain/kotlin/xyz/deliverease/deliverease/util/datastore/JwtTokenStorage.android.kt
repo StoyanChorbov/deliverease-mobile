@@ -1,6 +1,7 @@
 package xyz.deliverease.deliverease.util.datastore
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -24,6 +25,7 @@ actual class JwtTokenStorage(private val context: Context) {
     }
 
     actual suspend fun saveTokens(authToken: String, refreshToken: String) {
+        Log.d("JwtTokenStorage", "Saving tokens")
         context.dataStore.edit { preferences ->
             preferences[AUTH_TOKEN_KEY] = authToken
             preferences[REFRESH_TOKEN_KEY] = refreshToken

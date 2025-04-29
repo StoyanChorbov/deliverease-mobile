@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.display
+package xyz.deliverease.deliverease.android.ui.components.display
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -45,8 +45,8 @@ fun DeliveryRow(
         DeliveryRowTitle(
             title = "${delivery.name} (${delivery.category.toPascalCase()})" +
                     if (delivery.isFragile) " (fragile)" else "",
-            startLocation = delivery.startingLocationDto.name,
-            endLocation = delivery.endingLocationDto.name,
+            startLocation = delivery.startingLocationDto.region,
+            endLocation = delivery.endingLocationDto.region,
             onClick = handleNavigation
         )
     }

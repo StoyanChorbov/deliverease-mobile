@@ -7,10 +7,12 @@ import xyz.deliverease.deliverease.delivery.LocationDto
 @Serializable
 data class AddDeliveryDTO(
     val name: String,
-    val startLocationDto: LocationDto,
-    val endLocationDto: LocationDto,
     val description: String,
     val category: DeliveryCategory,
+    val startLocation: LocationDto,
+    val startLocationRegion: String,
+    val endLocation: LocationDto,
+    val endLocationRegion: String,
     val recipients: Set<String>,
     val isFragile: Boolean,
 )

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import xyz.deliverease.deliverease.DeliveryListDTO
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
-import xyz.deliverease.deliverease.android.ui.display.DeliveryRow
+import xyz.deliverease.deliverease.android.ui.components.display.DeliveryRow
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 import xyz.deliverease.deliverease.delivery.find.FindableDeliveryDto
 

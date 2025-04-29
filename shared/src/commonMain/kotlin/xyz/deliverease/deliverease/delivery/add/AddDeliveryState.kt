@@ -5,10 +5,12 @@ import xyz.deliverease.deliverease.delivery.LocationDto
 
 data class AddDeliveryState(
     val name: String = "",
-    val startLocationDto: LocationDto = LocationDto(),
-    val endLocationDto: LocationDto = LocationDto(),
     val description: String = "",
     val category: DeliveryCategory = DeliveryCategory.Other,
+    val startLocationDto: LocationDto = LocationDto(),
+    val startLocationRegion: String = "",
+    val endLocationDto: LocationDto = LocationDto(),
+    val endLocationRegion: String = "",
     val currentRecipient: String = "",
     val recipients: Set<String> = emptySet(),
     val isFragile: Boolean = false,

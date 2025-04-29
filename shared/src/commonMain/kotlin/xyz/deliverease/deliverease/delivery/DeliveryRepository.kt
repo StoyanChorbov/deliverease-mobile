@@ -49,7 +49,7 @@ class DeliveryRepository(
             url("$baseUrl/deliveries")
             contentType(ContentType.Application.Json)
             headers {
-                append("Bearer", accessToken)
+                append("Authorization", "Bearer $accessToken")
             }
         }
 
@@ -60,7 +60,7 @@ class DeliveryRepository(
                 url("$baseUrl/deliveries")
                 contentType(ContentType.Application.Json)
                 headers {
-                    append("Bearer", accessToken)
+                    append("Authorization", "Bearer $accessToken")
                 }
             }
         }

@@ -44,6 +44,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.context.startKoin
 import xyz.deliverease.deliverease.android.config.androidAppModule
+import xyz.deliverease.deliverease.android.ui.components.display.LoadingIndicator
 import xyz.deliverease.deliverease.android.ui.navigation.NavBar
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 import xyz.deliverease.deliverease.android.ui.navigation.NavGraph
@@ -88,14 +89,13 @@ val LocalNavController =
 @Composable
 fun MainScreen(mainViewModel: MainViewModel = koinViewModel()) {
     val state by mainViewModel.mainState.collectAsState()
-    val isLoggedIn = state.isLoggedIn
+//    val isLoggedIn = state.isLoggedIn
+    val isLoggedIn = true
     val navController = rememberNavController()
     val activity = LocalActivity.current ?: throw IllegalStateException("Activity is null")
 
     var showRationale by remember { mutableStateOf(false) }
     var showSettingDialogue by remember { mutableStateOf(false) }
-
-    // TODO: Check if permissions are already granted
 
     RequestPermission(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -146,12 +146,19 @@ fun MainScreen(mainViewModel: MainViewModel = koinViewModel()) {
             modifier = Modifier
                 .fillMaxSize()
                 .systemBarsPadding(),
-            bottomBar = { if (isLoggedIn) NavBar() }
+            bottomBar = {
+                Log.d("We got here", "Like wut")
+                if (isLoggedIn) NavBar()
+            }
         ) {
-            NavGraph(
-                navController = navController,
-                startDestination = if (isLoggedIn) NavDestination.Home else NavDestination.Login
-            )
+            if (state.loading)
+                LoadingIndicator()
+            else {
+                NavGraph(
+                    navController = navController,
+                    startDestination = if (isLoggedIn) NavDestination.Home else NavDestination.Login
+                )
+            }
         }
     }
 }

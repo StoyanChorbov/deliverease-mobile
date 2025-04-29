@@ -48,6 +48,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
             implementation(libs.androidx.lifecycle.viewmodel)
+//            implementation(libs.mapbox)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

@@ -79,16 +79,10 @@ class LoginViewModel(
 
                     _loginEvent.send(LoginEvent.Navigate.Home)
                 } catch (e: Exception) {
-                    _loginState.update { it.copy(error = e.message, hasError = true) }
+                    _loginState.update { it.copy(error = e.message, hasError = true, isLoading = false) }
                     _loginEvent.send(LoginEvent.Error(e.message ?: "An error occurred"))
                 }
             }
-        }
-    }
-
-    fun setPassword(password: String) {
-        _loginState.update {
-            it.copy(password = password)
         }
     }
 

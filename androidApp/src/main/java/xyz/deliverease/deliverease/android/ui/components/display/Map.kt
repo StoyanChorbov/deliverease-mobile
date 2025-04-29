@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.display
+package xyz.deliverease.deliverease.android.ui.components.display
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -77,7 +77,7 @@ fun MapWithLiveLocationAndMarkers(
     val markers = points.map { Point.fromLngLat(it.longitude, it.latitude) }
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
-            zoom(11.0)
+            zoom(3.0)
             center(if (markers.isNotEmpty()) markers[0] else Point.fromLngLat(0.0, 0.0))
             bearing(0.0)
             pitch(0.0)
@@ -136,7 +136,7 @@ fun DeliveriesMapWithClickableMarkers(
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
             zoom(11.0)
-            center(Point.fromLngLat(0.0, 0.0)) // TODO: Replace with current user location
+            center(Point.fromLngLat(0.0, 0.0))
             bearing(0.0)
             pitch(0.0)
         }

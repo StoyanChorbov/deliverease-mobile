@@ -1,7 +1,6 @@
 package xyz.deliverease.deliverease.user
 
 import io.ktor.client.call.body
-import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
@@ -54,52 +53,17 @@ class UserRepository(
         val authToken =
             jwtTokenStorage.getJwtToken() ?: throw IllegalArgumentException("No auth token found")
 
-        var res = client.get {
+        val res = client.get {
             url("$baseUrl/users/profile")
             contentType(ContentType.Application.Json)
             headers {
-                append("Bearer", authToken)
+                append("Authorization", "Bearer $authToken")
             }
         }
 
         if (res.status == HttpStatusCode.Unauthorized) {
-            val refreshToken = jwtTokenStorage.getRefreshToken()
-                ?: throw IllegalArgumentException("No refresh token found")
-            res = client.get {
-                url("$baseUrl/users/refresh")
-                contentType(ContentType.Application.Json)
-                headers {
-                    append("Bearer", refreshToken)
-                }
-            }
-        }
-
-        if (!res.status.isSuccess())
-            throw Exception("Failed to get profile")
-
-        return res.body()
-    }
-
-    suspend fun loginWithToken() {
-        val authToken =
-            jwtTokenStorage.getJwtToken() ?: throw IllegalArgumentException("No auth token found")
-
-        var res = client.get {
-            url("$baseUrl/users/login")
-            contentType(ContentType.Application.Json)
-            headers {
-                append("Bearer", authToken)
-            }
-        }
-
-        if (res.status == HttpStatusCode.Unauthorized) {
-            val refreshToken = jwtTokenStorage.getRefreshToken()
-                ?: throw IllegalArgumentException("No refresh token found")
-            res = client.get {
-                url("$baseUrl/users/refresh")
-                contentType(ContentType.Application.Json)
-                setBody(refreshToken)
-            }
+            refreshTokens()
+            return getProfile()
         }
 
         if (!res.status.isSuccess())

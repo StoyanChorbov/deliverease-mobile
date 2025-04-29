@@ -1,6 +1,7 @@
 package xyz.deliverease.deliverease.user.profile
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 
 // Data Transfer Object for user profile
 @Serializable

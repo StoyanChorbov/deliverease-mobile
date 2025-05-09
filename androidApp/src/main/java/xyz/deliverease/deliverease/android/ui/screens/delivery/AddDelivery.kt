@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,12 +49,13 @@ fun AddDeliveryScreenRoot(
     var screenIsAddRecipients by remember { mutableStateOf(false) }
 
     when (addDeliveryEvent) {
-//        is AddDeliveryEvent.Navigate -> {
-//            navigateTo(
-//                navController = navController,
-//                NavDestination.DeliveryDetails.route
-//            )
-//        }
+        is AddDeliveryEvent.Navigate -> {
+            navigateTo(
+                navController = navController,
+                "${NavDestination.DeliveryDetails.route}/${(addDeliveryEvent as AddDeliveryEvent.Navigate).deliveryId}"
+            )
+        }
+
         else -> {}
     }
 
@@ -63,44 +65,50 @@ fun AddDeliveryScreenRoot(
             addDeliveryState = addDeliveryState,
             setName = { addDeliveryViewModel.onEvent(AddDeliveryEvent.Input.SetName(it)) },
             setDescription = { addDeliveryViewModel.onEvent(AddDeliveryEvent.Input.SetDescription(it)) },
-            setStartLocation = { place, region ->
+            setStartLocationQuery = {
                 addDeliveryViewModel.onEvent(
-                    AddDeliveryEvent.Input.SetStartLocation(
-                        place,
-                        region
-                    )
-                )
-            },
-            setEndLocation = { place, region ->
-                addDeliveryViewModel.onEvent(
-                    AddDeliveryEvent.Input.SetEndLocation(
-                        place,
-                        region
-                    )
-                )
-            },
-            setDeliveryCategory = {
-                addDeliveryViewModel.onEvent(
-                    AddDeliveryEvent.Input.SetDeliveryCategory(
+                    AddDeliveryEvent.Input.SetStartLocationQuery(
                         it
                     )
                 )
             },
+            setStartLocation = {
+                addDeliveryViewModel.onEvent(
+                    AddDeliveryEvent.Input.SetStartLocation(it)
+                )
+            },
+            setEndLocationQuery = {
+                addDeliveryViewModel.onEvent(
+                    AddDeliveryEvent.Input.SetEndLocationQuery(
+                        it
+                    )
+                )
+            },
+            setEndLocation = {
+                addDeliveryViewModel.onEvent(
+                    AddDeliveryEvent.Input.SetEndLocation(it)
+                )
+            },
+            setDeliveryCategory = {
+                addDeliveryViewModel.onEvent(
+                    AddDeliveryEvent.Input.SetDeliveryCategory(it)
+                )
+            },
             setIsFragile = { addDeliveryViewModel.onEvent(AddDeliveryEvent.Input.SetIsFragile(it)) },
-            onAddRecipients = {
-//                navigateTo(
-//                    navController = navController,
-//                    NavDestination.AddDeliveryRecipients.route
-//                )
-                screenIsAddRecipients = true
-            }
+            onAddRecipients = { screenIsAddRecipients = true }
         )
     } else {
         AddDeliveryRecipientsScreen(
             modifier = modifier,
             label = "Recipient",
             addDeliveryState = addDeliveryState,
-            onChangeCurrentRecipient = { addDeliveryViewModel.onEvent(AddDeliveryEvent.Input.ChangeCurrentRecipient(it)) },
+            onChangeCurrentRecipient = {
+                addDeliveryViewModel.onEvent(
+                    AddDeliveryEvent.Input.ChangeCurrentRecipient(
+                        it
+                    )
+                )
+            },
             onAddRecipient = {
                 addDeliveryViewModel.onEvent(AddDeliveryEvent.Input.AddRecipient)
             },
@@ -119,8 +127,10 @@ fun AddDeliveryScreen(
     modifier: Modifier = Modifier,
     addDeliveryState: AddDeliveryState,
     setName: (String) -> Unit,
-    setStartLocation: (LocationDto, String) -> Unit,
-    setEndLocation: (LocationDto, String) -> Unit,
+    setStartLocationQuery: (String) -> Unit,
+    setStartLocation: (LocationDto) -> Unit,
+    setEndLocationQuery: (String) -> Unit,
+    setEndLocation: (LocationDto) -> Unit,
     setDescription: (String) -> Unit,
     setDeliveryCategory: (DeliveryCategory) -> Unit,
     setIsFragile: (Boolean) -> Unit,
@@ -152,11 +162,17 @@ fun AddDeliveryScreen(
         )
         LocationAutofill(
             label = "Start Location",
-            setLocation = setStartLocation
+            input = addDeliveryState.startLocationQuery,
+            onInputChange = setStartLocationQuery,
+            onSelectedChange = setStartLocation,
+            suggestions = addDeliveryState.startLocationSuggestions
         )
         LocationAutofill(
             label = "End Location",
-            setLocation = setEndLocation
+            input = addDeliveryState.endLocationQuery,
+            onInputChange = setEndLocationQuery,
+            onSelectedChange = setEndLocation,
+            suggestions = addDeliveryState.endLocationSuggestions
         )
         CheckboxWithLabel(
             label = "Is the package fragile?",
@@ -185,7 +201,10 @@ fun AddDeliveryScreen(
 }
 
 @Composable
-fun AddDeliveryRecipientsScreenRoot(modifier: Modifier = Modifier, addDeliveryViewModel: AddDeliveryViewModel = koinViewModel()) {
+fun AddDeliveryRecipientsScreenRoot(
+    modifier: Modifier = Modifier,
+    addDeliveryViewModel: AddDeliveryViewModel = koinViewModel()
+) {
     val navController = LocalNavController.current
     val addDeliveryState by addDeliveryViewModel.addDeliveryState.collectAsState()
     val addDeliveryEvent by addDeliveryViewModel.addDeliveryEvent.collectAsState(initial = AddDeliveryEvent.Idle)
@@ -197,6 +216,7 @@ fun AddDeliveryRecipientsScreenRoot(modifier: Modifier = Modifier, addDeliveryVi
 //                NavDestination.DeliveryDetails.route
 //            )
         }
+
         else -> {}
     }
 
@@ -243,14 +263,11 @@ fun AddDeliveryRecipientsScreen(
                 text = addDeliveryState.error ?: "An error occurred"
             )
         } else {
-            OutlinedIconButton(
+            OutlinedButton(
                 onClick = { onSubmit() },
                 modifier = Modifier.padding(top = 12.dp),
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.NavigateNext,
-                    contentDescription = "Add recipients"
-                )
+                Text("Add delivery")
             }
         }
     }

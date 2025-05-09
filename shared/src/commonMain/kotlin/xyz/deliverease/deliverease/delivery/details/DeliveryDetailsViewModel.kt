@@ -5,9 +5,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.BaseViewModel
-import xyz.deliverease.deliverease.delivery.DeliveryCategory
 import xyz.deliverease.deliverease.delivery.DeliveryRepository
-import xyz.deliverease.deliverease.delivery.LocationDto
 
 class DeliveryDetailsViewModel(
     private val deliveryId: String,
@@ -29,8 +27,8 @@ class DeliveryDetailsViewModel(
             _deliveryDetailsState.update {
                 it.copy(
                     name = deliveryDetails.name,
-                    startLocationDto = deliveryDetails.startingLocationDto,
-                    endLocationDto = deliveryDetails.endingLocationDto,
+                    startLocationDto = deliveryDetails.startingLocation,
+                    endLocationDto = deliveryDetails.endingLocation,
                     category = deliveryDetails.category,
                     recipients = deliveryDetails.recipients
                 )

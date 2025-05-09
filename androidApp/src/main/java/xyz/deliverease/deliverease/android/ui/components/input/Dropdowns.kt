@@ -14,8 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.mapbox.geojson.Point
-import com.mapbox.search.autocomplete.PlaceAutocompleteAddress
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,52 +47,6 @@ fun DropdownWithLabel(
                     text = { Text(it) },
                     onClick = {
                         selected = it
-                        onSelectedChange(it)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddressDropdown(
-    modifier: Modifier = Modifier,
-    label: String,
-    input: String,
-    items: Map<PlaceAutocompleteAddress, Point>,
-    readOnly: Boolean = false,
-    onInputChange: (String) -> Unit,
-    onSelectedChange: (Map.Entry<PlaceAutocompleteAddress, Point>) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var selected by rememberSaveable { mutableStateOf<PlaceAutocompleteAddress?>(null) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = it },
-        modifier = modifier
-    ) {
-        OutlinedTextField(
-            value = input,
-            onValueChange = {
-                onInputChange(it)
-                selected = null
-            },
-            readOnly = readOnly,
-            label = { Text(label) },
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
-        )
-
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            items.forEach {
-                DropdownMenuItem(
-                    text = { Text("${it.key.place}, ${it.key.region}") },
-                    onClick = {
-                        selected = it.key
                         onSelectedChange(it)
                         expanded = false
                     }

@@ -13,10 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import xyz.deliverease.deliverease.android.ui.components.display.MapWithMarkers
-import xyz.deliverease.deliverease.delivery.DeliveryCategory
-import xyz.deliverease.deliverease.delivery.LocationDto
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsDTO
-import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsViewModel
 import xyz.deliverease.deliverease.util.toPascalCase
 
 @Composable
@@ -28,7 +25,7 @@ fun FindableDeliveryScreenRoot(modifier: Modifier = Modifier) {
 @Composable
 fun FindableDeliveryScreen(modifier: Modifier = Modifier, delivery: DeliveryDetailsDTO) {
     Column {
-        MapWithMarkers(points = setOf(delivery.startingLocationDto, delivery.endingLocationDto))
+        MapWithMarkers(points = setOf(delivery.startingLocation, delivery.endingLocation))
         OutlinedCard(
             modifier = modifier
                 .fillMaxWidth()
@@ -46,7 +43,7 @@ fun FindableDeliveryScreen(modifier: Modifier = Modifier, delivery: DeliveryDeta
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Text(
-                    text = "${delivery.startingLocationDto.place} -> ${delivery.endingLocationDto.place}",
+                    text = "${delivery.startingLocation.place} -> ${delivery.endingLocation.place}",
                     style = MaterialTheme.typography.labelLarge
                 )
                 Text(

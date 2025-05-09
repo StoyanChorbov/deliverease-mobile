@@ -40,7 +40,10 @@ val androidAppModule = module {
 
     // ViewModels for screens
     viewModel {
-        MainViewModel(userRepository = get())
+        MainViewModel(
+            userRepository = get(),
+            jwtTokenStorage = get()
+        )
     }
     viewModel {
         HomeViewModel(deliveryRepository = get())

@@ -36,6 +36,24 @@ class UserRepository(
         )
     }
 
+    suspend fun logout() {
+        val authToken =
+            jwtTokenStorage.getJwtToken() ?: throw IllegalArgumentException("No auth token found")
+
+        val res = client.post {
+            url("$baseUrl/users/logout")
+            contentType(ContentType.Application.Json)
+            headers {
+                append("Authorization", "Bearer $authToken")
+            }
+        }
+
+        if (!res.status.isSuccess())
+            throw Exception("Failed to logout")
+
+        jwtTokenStorage.clearTokens()
+    }
+
     suspend fun register(user: UserRegisterDTO) {
         if (user.password != user.confirmPassword)
             throw IllegalArgumentException("Passwords do not match")

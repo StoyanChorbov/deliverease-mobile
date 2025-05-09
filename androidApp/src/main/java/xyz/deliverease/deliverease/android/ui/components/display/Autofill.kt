@@ -1,79 +1,53 @@
 package xyz.deliverease.deliverease.android.ui.components.display
 
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.mapbox.geojson.Point
-import com.mapbox.search.autocomplete.PlaceAutocomplete
-import com.mapbox.search.autocomplete.PlaceAutocompleteAddress
-import kotlinx.coroutines.launch
-import xyz.deliverease.deliverease.android.ui.components.input.AddressDropdown
 import xyz.deliverease.deliverease.delivery.LocationDto
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationAutofill(
     modifier: Modifier = Modifier,
     label: String,
-    setLocation: (LocationDto, String) -> Unit,
+    input: String,
+    onInputChange: (String) -> Unit,
+    onSelectedChange: (LocationDto) -> Unit,
+    suggestions: List<LocationDto>
 ) {
-    val autocomplete = PlaceAutocomplete.create()
-    var input by remember { mutableStateOf("") }
-    var isQueryTooShort by remember { mutableStateOf(false) }
-    var error by remember { mutableStateOf<String?>(null) }
-    var suggestions by remember { mutableStateOf<Map<PlaceAutocompleteAddress, Point>>(emptyMap()) }
+    var expanded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(input) {
-        if (input.length < 2) {
-            isQueryTooShort = true
-            return@LaunchedEffect
-        }
-        val response = autocomplete.suggestions(input)
-        response.onValue { querySuggestions ->
-            if (querySuggestions.isEmpty()) {
-                error = "Location not found"
-                return@onValue
-            }
-            launch {
-                suggestions = emptyMap()
-                querySuggestions.forEach {
-                    val address = autocomplete.select(it)
-                    if (address.value != null && address.value?.coordinate != null && address.value?.address?.region != null) {
-                        val coordinate = address.value?.coordinate
-                        if (coordinate != null) {
-                            suggestions =
-                                suggestions + (address.value?.address!! to coordinate)
-                        }
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        modifier = modifier
+    ) {
+        OutlinedTextField(
+            value = input,
+            onValueChange = onInputChange,
+            label = { Text(label) },
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable)
+        )
+
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            suggestions.forEach {
+                DropdownMenuItem(
+                    text = { Text(it.formattedAddress()) },
+                    onClick = {
+                        onSelectedChange(it)
+                        expanded = false
                     }
-                }
+                )
             }
-            isQueryTooShort = false
-            error = null
-        }.onError {
-            error = it.message
         }
     }
-
-    AddressDropdown(
-        modifier = modifier,
-        label = label,
-        input = input,
-        items = suggestions,
-        onInputChange = { input = it },
-        onSelectedChange = {
-            input = "${it.key.place}, ${it.key.region}"
-            setLocation(
-                LocationDto(
-                    it.key.place!!,
-                    it.key.region!!,
-                    it.value.latitude(),
-                    it.value.longitude()
-                ),
-                it.key.region!!
-            )
-        }
-    )
 }

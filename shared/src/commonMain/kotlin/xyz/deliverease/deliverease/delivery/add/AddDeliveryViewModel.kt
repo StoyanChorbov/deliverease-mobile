@@ -34,35 +34,69 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
                     it.copy(name = event.value)
                 }
             }
+
             is AddDeliveryEvent.Input.SetDescription -> {
                 _addDeliveryState.update {
                     it.copy(description = event.value)
                 }
             }
+
             is AddDeliveryEvent.Input.SetDeliveryCategory -> {
                 _addDeliveryState.update {
                     it.copy(category = event.value)
                 }
-            }is AddDeliveryEvent.Input.SetStartLocation -> {
+            }
+
+            is AddDeliveryEvent.Input.SetStartLocationQuery -> {
+                val query = event.value
                 _addDeliveryState.update {
-                    it.copy(startLocationDto = event.place, startLocationRegion = event.region)
+                    it.copy(startLocationQuery = query)
+                }
+                if (query.length > 2)
+                    getStartLocationSuggestions(query)
+            }
+
+            is AddDeliveryEvent.Input.SetStartLocation -> {
+                _addDeliveryState.update {
+                    it.copy(
+                        startLocationQuery = event.place.formattedAddress(),
+                        startLocationDto = event.place,
+                        startLocationRegion = event.place.region
+                    )
                 }
             }
+
+            is AddDeliveryEvent.Input.SetEndLocationQuery -> {
+                val query = event.value
+                _addDeliveryState.update {
+                    it.copy(endLocationQuery = query)
+                }
+                if (query.length > 2)
+                    getEndLocationSuggestions(query)
+            }
+
             is AddDeliveryEvent.Input.SetEndLocation -> {
                 _addDeliveryState.update {
-                    it.copy(endLocationDto = event.place, endLocationRegion = event.region)
+                    it.copy(
+                        endLocationQuery = event.place.formattedAddress(),
+                        endLocationDto = event.place,
+                        endLocationRegion = event.place.region
+                    )
                 }
             }
+
             is AddDeliveryEvent.Input.SetIsFragile -> {
                 _addDeliveryState.update {
                     it.copy(isFragile = event.value)
                 }
             }
+
             is AddDeliveryEvent.Input.ChangeCurrentRecipient -> {
                 _addDeliveryState.update {
                     it.copy(currentRecipient = event.value)
                 }
             }
+
             is AddDeliveryEvent.Input.AddRecipient -> {
                 _addDeliveryState.update {
                     it.copy(
@@ -71,24 +105,28 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
                     )
                 }
             }
+
             is AddDeliveryEvent.Input.RemoveRecipient -> {
                 _addDeliveryState.update {
                     it.copy(recipients = it.recipients - event.value)
                 }
             }
+
             is AddDeliveryEvent.Submit -> {
                 addDelivery()
             }
+
             is AddDeliveryEvent.Error -> {
                 _addDeliveryState.update {
                     it.copy(error = event.message, hasError = true)
                 }
             }
+
             else -> {}
         }
     }
 
-    fun addDelivery() {
+    private fun addDelivery() {
         scope.launch {
             _addDeliveryState.update {
                 it.copy(isLoading = true)
@@ -100,16 +138,34 @@ class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) :
 
             if (currentState.isInputValid) {
                 try {
-                    deliveryRepository.addDelivery(currentState.toDTO())
+                    val deliveryId = deliveryRepository.addDelivery(currentState.toDTO())
                     _addDeliveryState.update {
                         it.copy(isLoading = false)
                     }
-                    _addDeliveryEvent.send(AddDeliveryEvent.Navigate)
+                    _addDeliveryEvent.send(AddDeliveryEvent.Navigate(deliveryId))
                 } catch (e: Exception) {
                     _addDeliveryState.update {
                         it.copy(error = e.message, hasError = true, isLoading = false)
                     }
                 }
+            }
+        }
+    }
+
+    private fun getStartLocationSuggestions(query: String) {
+        scope.launch {
+            val suggestions = deliveryRepository.getLocationSuggestions(query)
+            _addDeliveryState.update {
+                it.copy(startLocationSuggestions = suggestions)
+            }
+        }
+    }
+
+    private fun getEndLocationSuggestions(query: String) {
+        scope.launch {
+            val suggestions = deliveryRepository.getLocationSuggestions(query)
+            _addDeliveryState.update {
+                it.copy(endLocationSuggestions = suggestions)
             }
         }
     }

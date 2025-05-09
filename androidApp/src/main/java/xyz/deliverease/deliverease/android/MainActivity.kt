@@ -1,19 +1,15 @@
 package xyz.deliverease.deliverease.android
 
-import android.annotation.SuppressLint
-import android.os.Bundle
 import android.Manifest
-import android.content.Context
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.AlertDialog
@@ -24,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,11 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mapbox.common.MapboxOptions
@@ -49,12 +39,17 @@ import xyz.deliverease.deliverease.android.ui.navigation.NavBar
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 import xyz.deliverease.deliverease.android.ui.navigation.NavGraph
 import xyz.deliverease.deliverease.android.ui.theme.DelivereaseTheme
+import xyz.deliverease.deliverease.android.ui.util.RequestBackgroundLocation
+import xyz.deliverease.deliverease.android.ui.util.RequestPermission
+import xyz.deliverease.deliverease.delivery.initializeDeliveryConfig
 import xyz.deliverease.deliverease.main.MainViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MapboxOptions.accessToken = getString(R.string.mapbox_access_token)
+        val mapboxAccessToken = getString(R.string.mapbox_access_token)
+        MapboxOptions.accessToken = mapboxAccessToken
+        initializeDeliveryConfig(mapboxAccessToken)
 
         startKoin {
             androidContext(this@MainActivity)
@@ -89,8 +84,7 @@ val LocalNavController =
 @Composable
 fun MainScreen(mainViewModel: MainViewModel = koinViewModel()) {
     val state by mainViewModel.mainState.collectAsState()
-//    val isLoggedIn = state.isLoggedIn
-    val isLoggedIn = true
+    val isLoggedIn = state.isLoggedIn
     val navController = rememberNavController()
     val activity = LocalActivity.current ?: throw IllegalStateException("Activity is null")
 
@@ -147,7 +141,6 @@ fun MainScreen(mainViewModel: MainViewModel = koinViewModel()) {
                 .fillMaxSize()
                 .systemBarsPadding(),
             bottomBar = {
-                Log.d("We got here", "Like wut")
                 if (isLoggedIn) NavBar()
             }
         ) {
@@ -163,75 +156,6 @@ fun MainScreen(mainViewModel: MainViewModel = koinViewModel()) {
     }
 }
 
-@Composable
-fun RequestPermission(
-    permission: String,
-    rationaleMessage: String,
-    onPermissionGranted: () -> Unit,
-    onPermissionDenied: () -> Unit
-) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val context = LocalContext.current
-    val permissionsLauncher =
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = { isGranted ->
-                if (isGranted) {
-                    onPermissionGranted()
-                } else {
-                    onPermissionDenied()
-                }
-            }
-        )
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START) {
-                if (!isPermissionGranted(context, permission)) {
-                    permissionsLauncher.launch(permission)
-                } else {
-                    onPermissionGranted()
-                }
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-}
-
-@Composable
-fun RequestBackgroundLocation(
-    onPermissionGranted: () -> Unit,
-    onPermissionDenied: () -> Unit
-) {
-    val context = LocalContext.current
-    val permissionsLauncher =
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = { isGranted ->
-                if (isGranted) {
-                    onPermissionGranted()
-                } else {
-                    onPermissionDenied()
-                }
-            }
-        )
-
-    DisposableEffect(Unit) {
-        if (isPermissionGranted(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            if (!isPermissionGranted(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-                permissionsLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            } else {
-                onPermissionGranted()
-            }
-        } else {
-            onPermissionDenied()
-        }
-        onDispose { }
-    }
-}
 
 fun navigateTo(navController: NavController, route: String) =
     navController.navigate(route) {
@@ -241,6 +165,3 @@ fun navigateTo(navController: NavController, route: String) =
         launchSingleTop = true
         restoreState = true
     }
-
-fun isPermissionGranted(context: Context, permission: String): Boolean =
-    ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED

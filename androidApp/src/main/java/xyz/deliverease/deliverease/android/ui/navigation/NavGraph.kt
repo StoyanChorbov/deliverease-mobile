@@ -30,6 +30,9 @@ fun NavGraph(
         composable(NavDestination.Home.route) {
             HomeScreenRoot()
         }
+        composable(NavDestination.DeliveryDetails.route) {
+            HomeScreenRoot()
+        }
         composable("${NavDestination.DeliveryDetails.route}/{deliveryId}") {
             val deliveryId = it.arguments?.getString("deliveryId")
             if (deliveryId == null)

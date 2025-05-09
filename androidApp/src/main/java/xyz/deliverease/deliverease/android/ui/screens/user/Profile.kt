@@ -4,25 +4,54 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.channels.Channel
 import org.koin.androidx.compose.koinViewModel
+import xyz.deliverease.deliverease.android.LocalNavController
+import xyz.deliverease.deliverease.android.navigateTo
 import xyz.deliverease.deliverease.android.ui.components.display.LoadingIndicator
+import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
+import xyz.deliverease.deliverease.user.profile.ProfileEvent
 import xyz.deliverease.deliverease.user.profile.ProfileState
 import xyz.deliverease.deliverease.user.profile.ProfileViewModel
 
 @Composable
-fun ProfileScreenRoot(modifier: Modifier = Modifier, profileViewModel: ProfileViewModel = koinViewModel()) {
+fun ProfileScreenRoot(
+    modifier: Modifier = Modifier,
+    profileViewModel: ProfileViewModel = koinViewModel()
+) {
     val profileState by profileViewModel.profileState.collectAsState()
-    ProfileScreen(modifier = modifier, profileState = profileState)
+    val profileEvent by profileViewModel.profileEvent.collectAsState(initial = ProfileEvent.Idle)
+    val navController = LocalNavController.current
+
+    LaunchedEffect(profileEvent) {
+        when (profileEvent) {
+            is ProfileEvent.Redirect -> navigateTo(
+                navController = navController,
+                route = NavDestination.Login.route
+            )
+            else -> {}
+        }
+    }
+
+    ProfileScreen(modifier = modifier, profileState = profileState, handleLogout = {
+        profileViewModel.onEvent(ProfileEvent.Logout)
+    })
 }
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, profileState: ProfileState) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    profileState: ProfileState,
+    handleLogout: () -> Unit
+) {
     val error = profileState.error
 
     if (profileState.loading) {
@@ -45,6 +74,16 @@ fun ProfileScreen(modifier: Modifier = Modifier, profileState: ProfileState) {
                     style = MaterialTheme.typography.bodyLarge,
                     fontStyle = FontStyle.Italic
                 )
+                TextButton(
+                    onClick = handleLogout,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text(
+                        text = "Logout",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     }

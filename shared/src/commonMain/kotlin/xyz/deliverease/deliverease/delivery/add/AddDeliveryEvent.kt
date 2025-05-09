@@ -10,15 +10,17 @@ sealed class AddDeliveryEvent {
         data class SetName(val value: String) : AddDeliveryEvent()
         data class SetDescription(val value: String) : AddDeliveryEvent()
         data class SetDeliveryCategory(val value: DeliveryCategory) : AddDeliveryEvent()
-        data class SetStartLocation(val place: LocationDto, val region: String) : AddDeliveryEvent()
-        data class SetEndLocation(val place: LocationDto, val region: String) : AddDeliveryEvent()
+        data class SetStartLocationQuery(val value: String) : AddDeliveryEvent()
+        data class SetStartLocation(val place: LocationDto) : AddDeliveryEvent()
+        data class SetEndLocationQuery(val value: String) : AddDeliveryEvent()
+        data class SetEndLocation(val place: LocationDto) : AddDeliveryEvent()
         data class ChangeCurrentRecipient(val value: String) : AddDeliveryEvent()
         data object AddRecipient : AddDeliveryEvent()
         data class RemoveRecipient(val value: String) : AddDeliveryEvent()
         data class SetIsFragile(val value: Boolean) : AddDeliveryEvent()
     }
 
-    data object Navigate : AddDeliveryEvent()
+    data class Navigate(val deliveryId: String) : AddDeliveryEvent()
 
     data object Submit : AddDeliveryEvent()
     data class Error(val message: String) : AddDeliveryEvent()

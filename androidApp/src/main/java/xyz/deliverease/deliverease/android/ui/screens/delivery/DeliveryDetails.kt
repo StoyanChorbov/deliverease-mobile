@@ -1,6 +1,11 @@
 package xyz.deliverease.deliverease.android.ui.screens.delivery
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.LocalShipping
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,10 +41,10 @@ fun DeliveryDetailsScreen(
 ) {
     val location = currentLocation() ?: return
     Column(modifier = modifier) {
-        MapWithLiveLocationAndMarkers(
-            points = setOf(deliveryDetailsState.startLocationDto, deliveryDetailsState.endLocationDto),
-            liveLocationDto = LocationDto("Name", "", location.latitude, location.longitude),
-        )
+//        MapWithLiveLocationAndMarkers(
+//            points = setOf(deliveryDetailsState.startLocationDto, deliveryDetailsState.endLocationDto),
+//            liveLocationDto = LocationDto("Name", "", latitude = location.latitude, longitude = location.longitude),
+//        )
         Text(
             text = "Name: ${deliveryDetailsState.name}",
             style = MaterialTheme.typography.titleMedium
@@ -50,6 +55,11 @@ fun DeliveryDetailsScreen(
         Text(
             text = "Category: ${deliveryDetailsState.category.name}",
             style = MaterialTheme.typography.bodyMedium
+        )
+        ExtendedFloatingActionButton(
+            onClick = {},
+            icon = { Icon(Icons.Outlined.LocalShipping, "Deliver package") },
+            text = { Text("Deliver package") }
         )
     }
 }

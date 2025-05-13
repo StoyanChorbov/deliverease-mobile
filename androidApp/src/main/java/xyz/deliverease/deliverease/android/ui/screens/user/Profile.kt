@@ -2,7 +2,10 @@ package xyz.deliverease.deliverease.android.ui.screens.user
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -74,7 +77,7 @@ fun ProfileScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     fontStyle = FontStyle.Italic
                 )
-                TextButton(
+                OutlinedButton(
                     onClick = handleLogout,
                     modifier = Modifier.padding(top = 8.dp)
                 ) {
@@ -83,6 +86,12 @@ fun ProfileScreen(
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
+                }
+                HorizontalDivider(color = MaterialTheme.colorScheme.secondary)
+                TextButton(
+                    onClick = {}
+                ) {
+                    Text("Sent packages")
                 }
             }
         }

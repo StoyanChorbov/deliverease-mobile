@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import xyz.deliverease.deliverease.DeliveryListDTO
 
 @Serializable
-data class DeliveriesListDTO(
+data class CurrentDeliveriesResponseDto(
     val toDeliver: List<DeliveryListDTO>,
-    val toReceive: List<DeliveryListDTO>,
+    val toReceive: List<DeliveryListDTO>
 )

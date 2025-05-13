@@ -23,7 +23,7 @@ fun DeliveryRow(
     delivery: DeliveryListDTO,
     handleNavigation: () -> Unit
 ) {
-    Row(
+    Surface(
         modifier = modifier
             .fillMaxWidth()
             .padding(
@@ -39,39 +39,17 @@ fun DeliveryRow(
                 horizontal = 12.dp,
                 vertical = 8.dp
             ),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        DeliveryRowTitle(
-            title = "${delivery.name} (${delivery.category.toPascalCase()})" +
-                    if (delivery.isFragile) " (fragile)" else "",
-            startLocation = delivery.startingLocationDto.region,
-            endLocation = delivery.endingLocationDto.region,
-            onClick = handleNavigation
-        )
-    }
-}
-
-@Composable
-fun DeliveryRowTitle(
-    modifier: Modifier = Modifier,
-    title: String,
-    startLocation: String,
-    endLocation: String,
-    onClick: () -> Unit
-) {
-    Surface(
-        onClick = onClick,
+        onClick = handleNavigation,
     ) {
         Column(modifier = modifier) {
             Text(
                 modifier = Modifier,
-                text = title,
+                text = delivery.name,
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
                 modifier = Modifier,
-                text = "$startLocation -> $endLocation",
+                text = "${delivery.startingLocationDto.region} -> ${delivery.endingLocationDto.region}",
                 style = MaterialTheme.typography.bodyMedium
             )
         }

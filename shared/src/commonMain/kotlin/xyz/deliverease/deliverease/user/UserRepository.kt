@@ -48,7 +48,7 @@ class UserRepository(
             }
         }
 
-        if (!res.status.isSuccess())
+        if (!res.status.isSuccess() && res.status != HttpStatusCode.Unauthorized)
             throw Exception("Failed to logout")
 
         jwtTokenStorage.clearTokens()

@@ -5,6 +5,7 @@ import androidx.compose.material.icons.automirrored.outlined.Login
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LocalShipping
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -15,6 +16,7 @@ sealed class NavDestination(val route: String, val icon: ImageVector, val label:
     data object DeliveryDetails : NavDestination("delivery-details", Icons.Outlined.Home, "Delivery Details")
     data object FindDelivery : NavDestination("find-delivery", Icons.Outlined.Search, "Find Delivery")
     data object FindableDelivery : NavDestination("findable-delivery", Icons.Outlined.Home, "Findable Delivery")
+    data object PastDeliveries : NavDestination("past-deliveries", Icons.Outlined.LocalShipping, "Past Deliveries")
     data object Login : NavDestination("login", Icons.AutoMirrored.Outlined.Login, "Login")
     data object Register : NavDestination("register", Icons.Outlined.PersonAdd, "Register")
     data object AddDelivery : NavDestination("add-delivery", Icons.Outlined.AddCircle, "Add Delivery")

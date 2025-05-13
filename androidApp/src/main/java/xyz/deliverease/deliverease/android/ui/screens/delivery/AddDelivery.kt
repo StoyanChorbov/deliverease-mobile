@@ -201,29 +201,6 @@ fun AddDeliveryScreen(
 }
 
 @Composable
-fun AddDeliveryRecipientsScreenRoot(
-    modifier: Modifier = Modifier,
-    addDeliveryViewModel: AddDeliveryViewModel = koinViewModel()
-) {
-    val navController = LocalNavController.current
-    val addDeliveryState by addDeliveryViewModel.addDeliveryState.collectAsState()
-    val addDeliveryEvent by addDeliveryViewModel.addDeliveryEvent.collectAsState(initial = AddDeliveryEvent.Idle)
-
-    when (addDeliveryEvent) {
-        is AddDeliveryEvent.Navigate -> {
-//            navigateTo(
-//                navController = navController,
-//                NavDestination.DeliveryDetails.route
-//            )
-        }
-
-        else -> {}
-    }
-
-
-}
-
-@Composable
 fun AddDeliveryRecipientsScreen(
     modifier: Modifier = Modifier,
     label: String,

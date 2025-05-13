@@ -1,28 +1,80 @@
 package xyz.deliverease.deliverease.android.ui.screens.delivery
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import org.koin.androidx.compose.koinViewModel
 import xyz.deliverease.deliverease.DeliveryListDTO
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
 import xyz.deliverease.deliverease.android.ui.components.display.DeliveryRow
-import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
+import xyz.deliverease.deliverease.android.ui.components.display.LocationAutofill
+import xyz.deliverease.deliverease.android.ui.location.currentLocation
+import xyz.deliverease.deliverease.delivery.LocationDto
+import xyz.deliverease.deliverease.delivery.find.FindDeliveryEvent
+import xyz.deliverease.deliverease.delivery.find.FindDeliveryViewModel
 import xyz.deliverease.deliverease.delivery.find.FindableDeliveryDto
 
 @Composable
-fun FindDeliveryScreenRoot(modifier: Modifier = Modifier) {
+fun FindDeliveryScreenRoot(
+    modifier: Modifier = Modifier,
+    findDeliveryViewModel: FindDeliveryViewModel = koinViewModel()
+) {
+    val findDeliveryState by findDeliveryViewModel.findDeliveryState.collectAsState()
+    val findDeliveryEvent by findDeliveryViewModel.findDeliveryEvent.collectAsState(
+        FindDeliveryEvent.Idle
+    )
     val navController = LocalNavController.current
-    FindDeliveryScreen(modifier = modifier, deliveries = emptySet(), handleNavigation = {
-        navigateTo(navController, "NavDestination.DeliveryDetails.route/$it")
-    })
+    val location = currentLocation() ?: return
+
+    FindDeliveryScreen(modifier = modifier,
+        deliveries = findDeliveryState.results,
+        locationInput = findDeliveryState.destinationQuery,
+        locationSuggestions = findDeliveryState.destinationSuggestions,
+        onUpdateLocationQuery = {
+            findDeliveryViewModel.onEvent(
+                FindDeliveryEvent.SetLocationQuery(
+                    it
+                )
+            )
+        },
+        onSelectDestination = { findDeliveryViewModel.onEvent(FindDeliveryEvent.SetDestination(it)) },
+        onFindDeliveries = {
+            findDeliveryViewModel.onEvent(FindDeliveryEvent.GetDeliveryOptions(location.longitude, location.latitude))
+        },
+        handleNavigation = {
+            navigateTo(navController, "NavDestination.DeliveryDetails.route/$it")
+        }
+    )
 }
 
 @Composable
-fun FindDeliveryScreen(modifier: Modifier, deliveries: Set<DeliveryListDTO>, handleNavigation: (String) -> Unit) {
+fun FindDeliveryScreen(
+    modifier: Modifier = Modifier,
+    deliveries: List<DeliveryListDTO>,
+    locationInput: String,
+    locationSuggestions: List<LocationDto>,
+    onUpdateLocationQuery: (String) -> Unit,
+    onSelectDestination: (LocationDto) -> Unit,
+    onFindDeliveries: () -> Unit,
+    handleNavigation: (String) -> Unit
+) {
     Column(modifier = modifier) {
+        LocationAutofill(
+            label = "Destination",
+            input = locationInput,
+            suggestions = locationSuggestions,
+            onInputChange = onUpdateLocationQuery,
+            onSelectedChange = onSelectDestination
+        )
+        Button(onClick = onFindDeliveries) {
+            Text("Find deliveries")
+        }
         if (deliveries.isNotEmpty()) {
             deliveries.forEach {
 //                FindableDeliveryCard(delivery = it)

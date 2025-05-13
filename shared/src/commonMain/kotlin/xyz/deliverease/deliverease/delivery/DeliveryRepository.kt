@@ -11,11 +11,13 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import xyz.deliverease.deliverease.BaseRepository
+import xyz.deliverease.deliverease.DeliveryListDTO
 import xyz.deliverease.deliverease.LocationQueryResponseDto
 import xyz.deliverease.deliverease.delivery.add.AddDeliveryDTO
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsDTO
-import xyz.deliverease.deliverease.delivery.home.DeliveriesListDTO
+import xyz.deliverease.deliverease.delivery.home.CurrentDeliveriesResponseDto
 import xyz.deliverease.deliverease.user.UserRepository
+import xyz.deliverease.deliverease.user.pastDelivery.UserDeliveryDTO
 import xyz.deliverease.deliverease.util.datastore.JwtTokenStorage
 
 expect fun getMapboxAccessToken(): String
@@ -24,6 +26,7 @@ class DeliveryRepository(
     private val jwtTokenStorage: JwtTokenStorage,
     private val userRepository: UserRepository
 ) : BaseRepository() {
+    //TODO: Rework refresh logic, since it refreshes tokens but doesn't update in the middle of the function
 
     suspend fun addDelivery(addDeliveryDTO: AddDeliveryDTO): String {
         val accessToken = jwtTokenStorage.getJwtToken()
@@ -59,12 +62,15 @@ class DeliveryRepository(
         return res.body()
     }
 
-    suspend fun getAllDeliveries(): DeliveriesListDTO {
+    suspend fun getDeliveryOptions(
+        startingLocationRegion: String,
+        endingLocationRegion: String
+    ): List<DeliveryListDTO> {
         val accessToken = jwtTokenStorage.getJwtToken()
             ?: throw IllegalArgumentException("No auth token found")
 
         var res = client.get {
-            url("$baseUrl/deliveries")
+            url("$baseUrl/deliveries/options/$startingLocationRegion/$endingLocationRegion")
             contentType(ContentType.Application.Json)
             headers {
                 append("Authorization", "Bearer $accessToken")
@@ -75,7 +81,7 @@ class DeliveryRepository(
             userRepository.refreshTokens()
 
             res = client.get {
-                url("$baseUrl/deliveries")
+                url("$baseUrl/deliveries/options/$startingLocationRegion/$endingLocationRegion")
                 contentType(ContentType.Application.Json)
                 headers {
                     append("Authorization", "Bearer $accessToken")
@@ -88,6 +94,95 @@ class DeliveryRepository(
         }
 
         return res.body()
+    }
+
+    suspend fun getCurrentDeliveries(): CurrentDeliveriesResponseDto {
+        val accessToken = jwtTokenStorage.getJwtToken()
+            ?: throw IllegalArgumentException("No auth token found")
+
+        var res = client.get {
+            url("$baseUrl/deliveries/current")
+            contentType(ContentType.Application.Json)
+            headers {
+                append("Authorization", "Bearer $accessToken")
+            }
+        }
+
+        if (res.status == HttpStatusCode.Unauthorized) {
+            userRepository.refreshTokens()
+
+            res = client.get {
+                url("$baseUrl/deliveries/current")
+                contentType(ContentType.Application.Json)
+                headers {
+                    append("Authorization", "Bearer $accessToken")
+                }
+            }
+        }
+
+        if (res.status != HttpStatusCode.OK) {
+            throw Exception("Error: ${res.body<String>()}")
+        }
+
+        return res.body()
+    }
+
+    suspend fun getPastDeliveries(): List<UserDeliveryDTO> {
+        val accessToken = jwtTokenStorage.getJwtToken()
+            ?: throw IllegalArgumentException("No auth token found")
+
+        val res = client.get {
+            url("$baseUrl/deliveries/past")
+            contentType(ContentType.Application.Json)
+            headers {
+                append("Authorization", "Bearer $accessToken")
+            }
+        }
+
+        if (!res.status.isSuccess())
+            throw Exception("There was an error")
+
+        return res.body()
+    }
+
+    suspend fun getLocationByCoordinates(longitude: Double, latitude: Double): LocationDto {
+        val accessToken = getMapboxAccessToken()
+
+        val res = client.get {
+            url(
+                "https://api.mapbox.com/search/geocode/v6/reverse?" +
+                        "longitude=$longitude&latitude=$latitude" +
+                        "&access_token=$accessToken"
+            )
+        }
+
+        if (!res.status.isSuccess())
+            throw Exception("There was a problem with the query")
+
+        return res.body<LocationQueryResponseDto>().features[0].let {
+            val context = it.properties.context
+
+            var number = context.address?.addressNumber?.toIntOrNull()
+            if (number == null) number = 0
+
+            var street = context.street?.name
+            if (street == null) street = ""
+
+            var place = context.place?.name
+            if (place == null) place = ""
+
+            var region = context.region?.name
+            if (region == null) region = ""
+
+            LocationDto(
+                place = place,
+                number = number,
+                street = street,
+                region = region,
+                longitude = it.geometry.coordinates[0],
+                latitude = it.geometry.coordinates[1]
+            )
+        }
     }
 
     suspend fun getLocationSuggestions(query: String): List<LocationDto> {

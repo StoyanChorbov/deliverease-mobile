@@ -6,6 +6,7 @@ import xyz.deliverease.deliverease.delivery.DeliveryRepository
 import xyz.deliverease.deliverease.delivery.NavigationService
 import xyz.deliverease.deliverease.delivery.add.AddDeliveryViewModel
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsViewModel
+import xyz.deliverease.deliverease.delivery.find.FindDeliveryViewModel
 import xyz.deliverease.deliverease.delivery.home.HomeViewModel
 import xyz.deliverease.deliverease.main.MainViewModel
 import xyz.deliverease.deliverease.user.UserRepository
@@ -74,4 +75,5 @@ val androidAppModule = module {
             deliveryRepository = get()
         )
     }
+    viewModel { FindDeliveryViewModel(deliveryRepository = get()) }
 }

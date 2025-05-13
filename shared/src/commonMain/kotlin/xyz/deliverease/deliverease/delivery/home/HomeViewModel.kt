@@ -21,7 +21,7 @@ class HomeViewModel(private val deliveryRepository: DeliveryRepository) : BaseVi
             _homeState.emit(HomeState(isLoading = true))
 
             try {
-                val deliveries = deliveryRepository.getAllDeliveries()
+                val deliveries = deliveryRepository.getCurrentDeliveries()
                 _homeState.emit(
                     HomeState(
                         toDeliver = deliveries.toDeliver,

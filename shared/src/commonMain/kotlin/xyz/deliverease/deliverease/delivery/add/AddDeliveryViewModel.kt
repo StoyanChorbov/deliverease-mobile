@@ -7,9 +7,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.BaseViewModel
-import xyz.deliverease.deliverease.delivery.DeliveryCategory
 import xyz.deliverease.deliverease.delivery.DeliveryRepository
-import xyz.deliverease.deliverease.delivery.LocationDto
 
 class AddDeliveryViewModel(private val deliveryRepository: DeliveryRepository) : BaseViewModel() {
 

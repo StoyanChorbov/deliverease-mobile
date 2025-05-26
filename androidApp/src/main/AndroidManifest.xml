@@ -4,9 +4,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+        android:name=".ui.location.LocationApp"
         android:label="Deliverease"
         android:networkSecurityConfig="@xml/network_config"
         android:icon="@mipmap/ic_launcher"
@@ -15,6 +18,7 @@
         android:allowBackup="false"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name=".ui.location.ForegroundLocationService" android:foregroundServiceType="location" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

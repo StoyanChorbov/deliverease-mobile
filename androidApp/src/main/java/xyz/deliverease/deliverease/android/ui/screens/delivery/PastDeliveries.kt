@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.android.ui.screens.user.delivery
+package xyz.deliverease.deliverease.android.ui.screens.delivery
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -11,20 +11,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import xyz.deliverease.deliverease.android.LocalNavController
 import xyz.deliverease.deliverease.android.navigateTo
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
-import xyz.deliverease.deliverease.user.pastDelivery.PastDeliveryState
-import xyz.deliverease.deliverease.user.pastDelivery.PastDeliveryViewModel
-import xyz.deliverease.deliverease.user.pastDelivery.UserDeliveryDTO
+import xyz.deliverease.deliverease.delivery.past.PastDeliveryState
+import xyz.deliverease.deliverease.delivery.past.PastDeliveriesViewModel
+import xyz.deliverease.deliverease.delivery.past.UserDeliveryDTO
 
 @Composable
 fun PastDeliveriesScreenRoot(
     modifier: Modifier = Modifier,
-    pastDeliveriesViewModel: PastDeliveryViewModel = koinViewModel()
+    pastDeliveriesViewModel: PastDeliveriesViewModel = koinViewModel()
 ) {
     val deliveryState by pastDeliveriesViewModel.pastDeliveryState.collectAsState()
     val navController = LocalNavController.current
@@ -46,8 +47,16 @@ fun PastDeliveriesScreen(
     deliveryState: PastDeliveryState,
     handleNavigation: (String) -> Unit
 ) {
-    Column(modifier = modifier) {
-        Text(text = "Previously sent packages")
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Previously sent packages",
+            style = MaterialTheme.typography.titleLarge
+        )
         deliveryState.deliveries.forEach {
             PastDeliveryRow(
                 delivery = it,

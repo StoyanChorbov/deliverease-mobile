@@ -4,15 +4,19 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -35,11 +39,11 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.context.startKoin
 import xyz.deliverease.deliverease.android.config.androidAppModule
 import xyz.deliverease.deliverease.android.ui.components.display.LoadingIndicator
+import xyz.deliverease.deliverease.android.ui.location.ForegroundLocationService
 import xyz.deliverease.deliverease.android.ui.navigation.NavBar
 import xyz.deliverease.deliverease.android.ui.navigation.NavDestination
 import xyz.deliverease.deliverease.android.ui.navigation.NavGraph
 import xyz.deliverease.deliverease.android.ui.theme.DelivereaseTheme
-import xyz.deliverease.deliverease.android.ui.util.RequestBackgroundLocation
 import xyz.deliverease.deliverease.android.ui.util.RequestPermission
 import xyz.deliverease.deliverease.delivery.initializeDeliveryConfig
 import xyz.deliverease.deliverease.main.MainViewModel
@@ -94,21 +98,45 @@ fun MainScreen(mainViewModel: MainViewModel = koinViewModel()) {
     RequestPermission(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION,
         rationaleMessage = "This app requires location permissions to find and track deliveries.",
-        onPermissionGranted = { Log.d("PermissionCallback", "Coarse location access permission granted!") },
+        onPermissionGranted = {
+            Log.d(
+                "PermissionCallback",
+                "Coarse location access permission granted!"
+            )
+        },
         onPermissionDenied = { showRationale = true }
     )
 
     RequestPermission(
         permission = Manifest.permission.ACCESS_FINE_LOCATION,
         rationaleMessage = "This app requires location permissions to find and track deliveries.",
-        onPermissionGranted = { Log.d("PermissionCallback", "Fine location access permission granted!") },
+        onPermissionGranted = {
+            Log.d(
+                "PermissionCallback",
+                "Fine location access permission granted!"
+            )
+        },
         onPermissionDenied = { showRationale = true }
     )
 
-    RequestBackgroundLocation(
-        onPermissionGranted = { Log.d("PermissionCallback", "Background location access permission granted!") },
-        onPermissionDenied = { showRationale = true }
-    )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        RequestPermission(
+            permission = Manifest.permission.POST_NOTIFICATIONS,
+            rationaleMessage = "This app requires notification permissions to find and track deliveries.",
+            onPermissionGranted = {
+                Log.d(
+                    "PermissionCallback",
+                    "Notification access permission granted!"
+                )
+            },
+            onPermissionDenied = { showRationale = true }
+        )
+    }
+
+//    RequestBackgroundLocation(
+//        onPermissionGranted = { Log.d("PermissionCallback", "Background location access permission granted!") },
+//        onPermissionDenied = { showRationale = true }
+//    )
 
     if (showRationale) {
         AlertDialog(
@@ -146,7 +174,7 @@ fun MainScreen(mainViewModel: MainViewModel = koinViewModel()) {
         ) {
             if (state.loading)
                 LoadingIndicator()
-            else {
+            else if (!showRationale) {
                 NavGraph(
                     navController = navController,
                     startDestination = if (isLoggedIn) NavDestination.Home else NavDestination.Login

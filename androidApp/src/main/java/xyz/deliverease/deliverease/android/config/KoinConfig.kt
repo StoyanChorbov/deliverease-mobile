@@ -8,6 +8,7 @@ import xyz.deliverease.deliverease.delivery.add.AddDeliveryViewModel
 import xyz.deliverease.deliverease.delivery.details.DeliveryDetailsViewModel
 import xyz.deliverease.deliverease.delivery.find.FindDeliveryViewModel
 import xyz.deliverease.deliverease.delivery.home.HomeViewModel
+import xyz.deliverease.deliverease.delivery.past.PastDeliveriesViewModel
 import xyz.deliverease.deliverease.main.MainViewModel
 import xyz.deliverease.deliverease.user.UserRepository
 import xyz.deliverease.deliverease.user.login.LoginViewModel
@@ -72,8 +73,10 @@ val androidAppModule = module {
     viewModel { (deliveryId: String) ->
         DeliveryDetailsViewModel(
             deliveryId = deliveryId,
-            deliveryRepository = get()
+            deliveryRepository = get(),
+            userRepository = get()
         )
     }
     viewModel { FindDeliveryViewModel(deliveryRepository = get()) }
+    viewModel { PastDeliveriesViewModel(deliveryRepository = get()) }
 }

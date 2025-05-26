@@ -24,7 +24,7 @@ fun currentLocation(): Location? {
         task.addOnSuccessListener { result ->
             location = result
         }
-        onDispose {  }
+        onDispose {}
     }
 
     return location

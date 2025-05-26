@@ -12,7 +12,7 @@ import xyz.deliverease.deliverease.android.ui.screens.HomeScreenRoot
 import xyz.deliverease.deliverease.android.ui.screens.user.LoginScreenRoot
 import xyz.deliverease.deliverease.android.ui.screens.user.ProfileScreenRoot
 import xyz.deliverease.deliverease.android.ui.screens.user.RegisterScreenRoot
-import xyz.deliverease.deliverease.android.ui.screens.user.delivery.PastDeliveriesScreenRoot
+import xyz.deliverease.deliverease.android.ui.screens.delivery.PastDeliveriesScreenRoot
 
 // The NavGraph to map all routes/endpoint to their corresponding screens/composables
 @Composable
@@ -51,9 +51,9 @@ fun NavGraph(
         composable(NavDestination.FindDelivery.route) {
             FindDeliveryScreenRoot()
         }
-        composable(NavDestination.FindableDelivery.route) {
-            FindDeliveryScreenRoot()
-        }
+//        composable(NavDestination.FindableDelivery.route) {
+//            FindDeliveryScreenRoot()
+//        }
 //        composable("${NavDestination.FindDelivery.route}/{deliveryId}") {
 //            val deliveryId = it.arguments?.getString("deliveryId")
 //            if (deliveryId == null)

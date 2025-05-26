@@ -72,7 +72,7 @@ fun MapWithMarkers(modifier: Modifier = Modifier, points: Set<LocationDto>) {
 fun MapWithLiveLocationAndMarkers(
     modifier: Modifier = Modifier,
     points: Set<LocationDto>,
-    liveLocationDto: LocationDto
+    liveLocationDto: LocationDto?
 ) {
     val markers = points.map { Point.fromLngLat(it.longitude, it.latitude) }
     val mapViewportState = rememberMapViewportState {
@@ -105,13 +105,15 @@ fun MapWithLiveLocationAndMarkers(
                 iconImage = pointMarker
             }
         }
-        PointAnnotation(
-            point = Point.fromLngLat(liveLocationDto.longitude, liveLocationDto.latitude),
-        ) {
-            iconImage = liveLocationMarker
-            iconColor = Color(0xFF00FF00) // Green color for live location
-            textField = "Wassup"
-            textColor = Color(0xFF00FF00)
+        if (liveLocationDto != null) {
+            PointAnnotation(
+                point = Point.fromLngLat(liveLocationDto.longitude, liveLocationDto.latitude),
+            ) {
+                iconImage = liveLocationMarker
+                iconColor = Color(0xFF00FF00) // Green color for live location
+                textField = "Wassup"
+                textColor = Color(0xFF00FF00)
+            }
         }
     }
 }

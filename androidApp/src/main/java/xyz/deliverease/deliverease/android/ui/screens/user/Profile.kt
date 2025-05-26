@@ -34,25 +34,25 @@ fun ProfileScreenRoot(
     val profileEvent by profileViewModel.profileEvent.collectAsState(initial = ProfileEvent.Idle)
     val navController = LocalNavController.current
 
-    LaunchedEffect(profileEvent) {
-        when (profileEvent) {
-            is ProfileEvent.Redirect -> navigateTo(
+    ProfileScreen(
+        modifier = modifier,
+        profileState = profileState,
+        redirectToPastDeliveries = {
+            navigateTo(
                 navController = navController,
-                route = NavDestination.Login.route
+                route = NavDestination.PastDeliveries.route
             )
-            else -> {}
-        }
-    }
-
-    ProfileScreen(modifier = modifier, profileState = profileState, handleLogout = {
-        profileViewModel.onEvent(ProfileEvent.Logout)
-    })
+        },
+        handleLogout = {
+            profileViewModel.onEvent(ProfileEvent.Logout)
+        })
 }
 
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     profileState: ProfileState,
+    redirectToPastDeliveries: () -> Unit,
     handleLogout: () -> Unit
 ) {
     val error = profileState.error
@@ -89,7 +89,7 @@ fun ProfileScreen(
                 }
                 HorizontalDivider(color = MaterialTheme.colorScheme.secondary)
                 TextButton(
-                    onClick = {}
+                    onClick = redirectToPastDeliveries
                 ) {
                     Text("Sent packages")
                 }

@@ -1,4 +1,4 @@
-package xyz.deliverease.deliverease.user.pastDelivery
+package xyz.deliverease.deliverease.delivery.past
 
 import kotlinx.serialization.Serializable
 import xyz.deliverease.deliverease.delivery.DeliveryCategory

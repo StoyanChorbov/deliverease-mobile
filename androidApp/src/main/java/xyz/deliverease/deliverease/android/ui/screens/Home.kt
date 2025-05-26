@@ -3,8 +3,11 @@ package xyz.deliverease.deliverease.android.ui.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,6 +31,7 @@ fun HomeScreen(
     toReceive: List<DeliveryListDTO>,
     handleNavigation: (String) -> Unit
 ) {
+    val scrollState = rememberScrollState()
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -39,22 +43,26 @@ fun HomeScreen(
                         .map { it.endingLocationDto })
                 .toSet(),
             liveLocationDto = LocationDto(
-                place = "Karlovo",
-                region = "Plovdiv",
                 latitude = location.latitude,
                 longitude = location.longitude
             ),
         )
-        DeliveriesSection(
-            label = "Packages to deliver",
-            deliveries = toDeliver,
-            handleNavigation = handleNavigation
-        )
-        DeliveriesSection(
-            label = "Packages to receive",
-            deliveries = toReceive,
-            handleNavigation = handleNavigation
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            DeliveriesSection(
+                label = "Packages to deliver",
+                deliveries = toDeliver,
+                handleNavigation = handleNavigation
+            )
+            DeliveriesSection(
+                label = "Packages to receive",
+                deliveries = toReceive,
+                handleNavigation = handleNavigation
+            )
+        }
     }
 }
 

@@ -51,37 +51,37 @@ fun RequestPermission(
     }
 }
 
-@Composable
-fun RequestBackgroundLocation(
-    onPermissionGranted: () -> Unit,
-    onPermissionDenied: () -> Unit
-) {
-    val context = LocalContext.current
-    val permissionsLauncher =
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = { isGranted ->
-                if (isGranted) {
-                    onPermissionGranted()
-                } else {
-                    onPermissionDenied()
-                }
-            }
-        )
-
-    DisposableEffect(Unit) {
-        if (isPermissionGranted(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            if (!isPermissionGranted(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-                permissionsLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            } else {
-                onPermissionGranted()
-            }
-        } else {
-            onPermissionDenied()
-        }
-        onDispose { }
-    }
-}
+//@Composable
+//fun RequestBackgroundLocation(
+//    onPermissionGranted: () -> Unit,
+//    onPermissionDenied: () -> Unit
+//) {
+//    val context = LocalContext.current
+//    val permissionsLauncher =
+//        rememberLauncherForActivityResult(
+//            contract = ActivityResultContracts.RequestPermission(),
+//            onResult = { isGranted ->
+//                if (isGranted) {
+//                    onPermissionGranted()
+//                } else {
+//                    onPermissionDenied()
+//                }
+//            }
+//        )
+//
+//    DisposableEffect(Unit) {
+//        if (isPermissionGranted(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+//            if (!isPermissionGranted(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+//                permissionsLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+//            } else {
+//                onPermissionGranted()
+//            }
+//        } else {
+//            onPermissionDenied()
+//        }
+//        onDispose { }
+//    }
+//}
 
 
 fun isPermissionGranted(context: Context, permission: String): Boolean =

@@ -1,15 +1,13 @@
-package xyz.deliverease.deliverease.user.pastDelivery
+package xyz.deliverease.deliverease.delivery.past
 
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import xyz.deliverease.deliverease.BaseViewModel
 import xyz.deliverease.deliverease.delivery.DeliveryRepository
 
-class PastDeliveryViewModel(private val deliveryRepository: DeliveryRepository) : BaseViewModel() {
+class PastDeliveriesViewModel(private val deliveryRepository: DeliveryRepository) : BaseViewModel() {
 
     private val _pastDeliveryState = MutableStateFlow(PastDeliveryState())
     val pastDeliveryState = _pastDeliveryState.asStateFlow()

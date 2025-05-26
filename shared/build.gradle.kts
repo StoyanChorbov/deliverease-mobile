@@ -40,6 +40,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
+            implementation(libs.signalrkore)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

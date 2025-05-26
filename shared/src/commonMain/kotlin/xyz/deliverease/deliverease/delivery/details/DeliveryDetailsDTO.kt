@@ -11,6 +11,7 @@ data class DeliveryDetailsDTO(
     val description: String,
     val sender: String,
     val recipients: Set<String>,
+    val deliverer: String?,
     val startingLocation: LocationDto,
     val endingLocation: LocationDto,
     val category: DeliveryCategory,

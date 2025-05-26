@@ -2,6 +2,7 @@ package xyz.deliverease.deliverease.android.ui.screens.delivery
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -235,16 +236,17 @@ fun AddDeliveryRecipientsScreen(
 
         if (addDeliveryState.isLoading) {
             LoadingIndicator()
-        } else if (addDeliveryState.hasError) {
-            Text(
-                text = addDeliveryState.error ?: "An error occurred"
-            )
         } else {
             OutlinedButton(
                 onClick = { onSubmit() },
                 modifier = Modifier.padding(top = 12.dp),
             ) {
                 Text("Add delivery")
+            }
+            if (addDeliveryState.hasError) {
+                Text(
+                    text = addDeliveryState.error ?: "An error occurred"
+                )
             }
         }
     }

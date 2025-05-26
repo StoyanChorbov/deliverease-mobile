@@ -10,9 +10,12 @@ data class DeliveryDetailsState(
     val description: String = "",
     val category: DeliveryCategory = DeliveryCategory.Other,
     val currentRecipient: String = "",
+    val sender: String = "",
     val recipients: Set<String> = emptySet(),
+    val deliverer: String? = null,
+    val delivererLocation: LocationDto? = null,
+    val user: String = "",
     val isFragile: Boolean = false,
     val isLoading: Boolean = false,
-    val error: String? = null,
-    val hasError: Boolean = false
+    val error: String? = null
 )
